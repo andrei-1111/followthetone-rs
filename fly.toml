@@ -1,0 +1,22 @@
+app = "guitar-gear-api"
+primary_region = "sin" # Singapore is close to PH
+kill_signal = "SIGINT"
+kill_timeout = 5
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  RUST_LOG = "info"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+  [services.concurrency]
+    hard_limit = 50
+    soft_limit = 25
