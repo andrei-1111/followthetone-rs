@@ -7,7 +7,8 @@ app = 'followthetone-rs'
 primary_region = 'sin'
 
 [build]
-
+  dockerfile = "Dockerfile"
+  context = "."        # or "subdir" if your files live there
 [http_service]
   internal_port = 8080
   force_https = true

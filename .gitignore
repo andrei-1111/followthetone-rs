@@ -1,58 +1,36 @@
-# Rust build artifacts
+# --- Rust build artifacts ---
 /target/
-**/*.rs.bk
+/**/*.rs.bk
+*.dSYM
 *.pdb
 
-# Cargo
-*.orig
+# If you enable SQLx offline mode, REMOVE this ignore and commit .sqlx/
+# (offline mode stores query metadata used at build time)
+/.sqlx/
 
-# Environment files
+# --- Env & secrets ---
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.secrets
+*.key
+*.pem
 
-# IDE and editor files
+# --- Logs & temp ---
+*.log
+logs/
+tmp/
+*.pid
+
+# --- Editors / OS cruft ---
 .vscode/
 .idea/
 *.swp
-*.swo
 *~
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Logs
-*.log
-logs/
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Temporary files
-*.tmp
-*.temp
-temp/
-tmp/
-
-# Coverage reports
-coverage/
-*.profraw
-
-# Documentation build
-doc/
-docs/target/
-
-# Docker
-.dockerignore
-
-# Backup files
-*.bak
-*.backup
+# --- Optional: Node stuff (if you add a frontend later) ---
+# node_modules/
+# .next/
+# out/
