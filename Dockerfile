@@ -1,5 +1,5 @@
 # Multi-stage build for small prod image
-FROM rust:1.78-bookworm AS builder
+FROM rust:1.86-bookworm AS builder   # any 1.84+ supports edition 2024
 WORKDIR /app
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
