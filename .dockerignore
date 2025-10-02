@@ -1,4 +1,3 @@
-# keep sources and Cargo.* in the context!
 target
 .git
 **/.DS_Store
