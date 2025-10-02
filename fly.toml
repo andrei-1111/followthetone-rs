@@ -21,3 +21,13 @@ primary_region = 'sin'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+
+[checks]
+  [checks.http]
+    port = 8080
+    type = "http"
+    interval = "10s"
+    timeout = "2s"
+    method = "get"
+    path = "/health"
