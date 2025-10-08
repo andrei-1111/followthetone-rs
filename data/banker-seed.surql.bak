@@ -71,7 +71,7 @@ CREATE guitar_hardware CONTENT {
 
 CREATE guitar_setup CONTENT {
   guitar_id: $g.id,
-  strings: "Stringjoy 1046 Pure Nickel",
+  strings: "Stringjoy 10–46 Pure Nickel",
   tuning: "Standard",
   action: "4/64",
   nut_material: "Unbleached Polished Bone",

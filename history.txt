@@ -1,26 +1,101 @@
 #V2
-UPDATE test:ping MERGE { from_env: true, at: time::now() };
-SELECT * FROM test:ping;
-USE NS gear DB guitars;
-CREATE guitar:banker_58_spec_v CONTENT {  brand: "Banker",  model: "58' Spec V",  price_cents: 469900,  price_currency: "USD",  body_style: "V",  woods: { body: "Korina", neck: "Quartersawn Korina", fretboard: "Rosewood" },  dimensions: { scale_length: "24 3/4", radius: "12", nut_width: '1 11/16"' },  pickups: [    { position: "neck", type: "Humbucker", model: "PAF" },    { position: "bridge", type: "Humbucker", model: "PAF" }  ],  hardware: { bridge: "Faber ABR-H", tailpiece: 'Solid Brass "V"', tuners: "Kluson Deluxe" },  controls: [    { name: "Volume", detail: "Neck" },    { name: "Volume", detail: "Bridge" },    { name: "Tone", detail: "Master" },    { name: "Switch", detail: "Switchcraft 3-way" }  ],  finish: { type: "Nitrocellulose Lacquer", color: "Natural", aging: "Aged" },  setup: { strings: "Stringjoy 10-46 Pure Nickel", tuning: "Standard", action: "4/64" }};
-CREATE guitar:gibson_1960_lp CONTENT {  brand: "Gibson Murphy Lab",  line: "Murphy Lab",  model: "Wildwood Spec 1960 Les Paul Standard",  variant: '"Beauty of the Burst" Page 151',  price_cents: 0, price_currency: "USD",  woods: { top: "2-Pc Figured Maple (HHG)", body: "1-Pc Lightweight Mahogany", neck: "Mahogany", fretboard: "Indian Rosewood (HHG)" },  dimensions: { scale_length: "24.75", radius: "12", nut_width: '1.687"' },  appointments: { inlays: "Aged Cellulose Nitrate Trapezoid", binding: "1-Ply Royalite" },  pickups: [    { position: "neck", type: "Humbucker", model: "Wildwood Spec Custombucker" },    { position: "bridge", type: "Humbucker", model: "Wildwood Spec Custombucker" }  ],  hardware: { bridge: "No-Wire ABR-1", tailpiece: "Lightweight Aluminum Stopbar", tuners: "Kluson Double-Ring Single-Line", color: "Nickel" },  controls: [    { name: "Volume", detail: "Neck" },    { name: "Volume", detail: "Bridge" },    { name: "Tone", detail: "Neck" },    { name: "Tone", detail: "Bridge" },    { name: "Switch", detail: "3-way Toggle" }  ],  finish: { type: "Nitro", color: "Ice Tea Burst", aging: "Light Aged" },  case_info: { type: "Brown/Pink Lifton Reissue 5-Latch", coa: true }};
-INFO FOR DB;
-SELECT * FROM guitars LIMIT 3;
+SELECT count() FROM guitar_controls;
+REMOVE EVENT guitars_set_updated_at ON TABLE guitars;
+REMOVE EVENT guitars_touch ON TABLE guitars;
+DEFINE EVENT guitars_touch ON TABLE guitars WHEN $event = "UPDATE" THEN { UPDATE $after SET updated_at = time::now(); };
+SELECT * FROM guitars LIMIT 1;
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+CREATE guitars CONTENT { brand: "Test", model: "Unit", body_style: "Test", price_cents: 0, price_currency: "USD", serial_number: "" };
+SELECT * FROM guitars LIMIT 1;
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+CREATE guitars CONTENT { brand: "Test", model: "Unit", body_style: "Test", price_cents: 0, price_currency: "USD", serial_number: "" };
+SELECT * FROM guitars LIMIT 1;
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+CREATE guitars CONTENT { brand: "Test2", model: "Unit", body_style: "Test2", price_cents: 0, price_currency: "USD", serial_number: "" };
+SELECT * FROM guitars LIMIT 1;
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+SELECT * FROM guitars;
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+INFO FOR TABLE guitar_dimensions;
+INFO FOR TABLE guitar_pickups;
+INFO FOR TABLE guitar_controls;
 SELECT count() FROM guitars;
-BEGIN TRANSACTION;
-LET $g = (  CREATE guitars CONTENT {    brand: "Banker",    line: NULL,    model: "Ironman CT Standard",    variant: NULL,    year_reference: NULL,    weight: NULL,    body_style: "Bound Double Cutaway",    price_cents: NULL,    price_currency: NULL,    serial_number: NULL,    created_at: time::now(),    updated_at: time::now()  });
-CREATE guitar_dimensions CONTENT {  guitar_id: $g.id,  scale_length: "24 3/4\\" (Vintage \\"Rule of 18\\")",  nut_width: "1 5/8\\"",  neck_profile: "'60 \\"C\\" Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12\\"",  fret_count: NULL,  fret_type: "Jescar 45085 Nickel Silver",  binding: NULL};
-CREATE guitar_appointments CONTENT {  guitar_id: $g.id,  binding_body: "Bound body",  binding_fingerboard: "1-Ply fingerboard binding",  inlays: "Vintage Trapezoid",  headstock_veneer: NULL,  other: NULL};
-CREATE guitar_woods CONTENT {  guitar_id: $g.id,  top: "Carved Flame Maple Top",  body: "Honduran Mahogany",  neck: "Quartersawn Honduran Mahogany",  fingerboard: "Rosewood",  neck_joint: NULL,  top_carve: "Carved"};
-CREATE guitar_finish CONTENT {  guitar_id: $g.id,  color: "Vintage Sunburst",  type: "Nitrocellulose Lacquer",  aging: NULL,  colors: ["Vintage Sunburst", "Goldtop"],  notes: NULL};
-CREATE guitar_hardware CONTENT {  guitar_id: $g.id,  material: NULL,  bridge: "Faber ABR-H",  tailpiece: "Tailpiece w/ Collarless Locking Studs",  tuners: "Grover Rotomatic",  pickguard: NULL,  pickup_rings: "M69 Mounting Rings",  notes: NULL};
-CREATE guitar_setup CONTENT {  guitar_id: $g.id,  strings: "Stringjoy 10–46 Pure Nickel",  tuning: "Standard",  action: "4/64",  nut_material: "Unbleached Polished Bone",  truss_rod: "2-Way Adjustable"};
-CREATE guitar_case CONTENT {  guitar_id: $g.id,  type: NULL,  coa_included: NULL,  notes: NULL};
-CREATE guitar_pickups CONTENT {  guitar_id: $g.id,  position: "Neck",  type: "Humbucker",  model: "Custom Throbak PAF",  winding: NULL};
-CREATE guitar_pickups CONTENT {  guitar_id: $g.id,  position: "Bridge",  type: "Humbucker",  model: "Custom Throbak PAF",  winding: NULL};
+SELECT count() FROM guitar_dimensions;
+SELECT count() FROM guitar_pickups;
+SELECT count() FROM guitar_controls;
+SELECT count() FROM guitar_pickups;
+SELECT * FROM guitars;
+SELECT id,brand,model FROM guitars WHERE brand = "Banker";
+LET $g = (CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard", body_style: "Bound Double Cutaway", line: "", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "" } RETURN AFTER);
+CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard", body_style: "Bound Double Cutaway", price_cents: 0, price_currency: "USD", serial_number: "" };
+SELECT * FROM guitars WHERE brand = "Banker" AND model = "Ironman CT Standard" ORDER BY created_at DESC LIMIT 1;
+SELECT count() FROM guitar_pickups;
+SELECT * FROM guitars;
+-- use the most recently created Banker Ironman
+-- Core guitar (capture id)
+LET $g = (CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard", body_style: "Bound Double Cutaway", line: "", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "" } RETURN AFTER);
+-- Dimensions / specs
+CREATE guitar_dimensions CONTENT { guitar_id: $g.id, scale_length: "24 3/4", nut_width: "1 5/8", neck_profile: "60 C Shape", neck_thickness_1st: ".91", neck_thickness_12th: ".93", fingerboard_radius: "12", fret_count: 22, fret_type: "Jescar 45085 Nickel Silver", binding: "Bound" };
+-- Appointments
+CREATE guitar_appointments CONTENT { guitar_id: $g.id, binding_body: "Bound body", binding_fingerboard: "1-Ply fingerboard binding", inlays: "Vintage Trapezoid", headstock_veneer: "", other: "" };
+-- Woods
+CREATE guitar_woods CONTENT { guitar_id: $g.id, top: "Carved Flame Maple Top", body: "Honduran Mahogany", neck: "Quartersawn Honduran Mahogany", fingerboard: "Rosewood", neck_joint: "", top_carve: "Carved" };
+-- Finish
+CREATE guitar_finish CONTENT { guitar_id: $g.id, color: "Vintage Sunburst", type: "Nitrocellulose Lacquer", aging: "", colors: ["Vintage Sunburst","Goldtop"], notes: "" };
+-- Hardware
+CREATE guitar_hardware CONTENT { guitar_id: $g.id, material: "Nickel", bridge: "Faber ABR-H", tailpiece: "Tailpiece with Collarless Locking Studs", tuners: "Grover Rotomatic", pickguard: "", pickup_rings: "M69 Mounting Rings", notes: "" };
+-- Setup
+CREATE guitar_setup CONTENT { guitar_id: $g.id, strings: "Stringjoy 10-46 Pure Nickel", tuning: "Standard", action: "4/64", nut_material: "Unbleached Polished Bone", truss_rod: "2-Way Adjustable" };
+-- Case / COA
+CREATE guitar_case CONTENT { guitar_id: $g.id, type: "Hard case", coa_included: true, notes: "" };
+-- Pickups (2x)
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "Custom Throbak PAF", winding: "" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Custom Throbak PAF", winding: "" };
+-- Controls (5x)
 CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "CTS 550k Potentiometer" };
 CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "CTS 550k Potentiometer" };
 CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "Switchcraft" };
-COMMIT TRANSACTION;
-INFO FOR TABLE guitars;
-INFO FOR DB;
+-- 1) Find or create the core guitar, keep its id in $g
+LET $found = (SELECT id, created_at FROM guitars WHERE brand = "Banker" AND model = "Ironman CT Standard" ORDER BY created_at DESC LIMIT 1);
+LET $g = (IF array::len($found) = 0 THEN (CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard", body_style: "Bound Double Cutaway", line: "", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "" } RETURN AFTER) ELSE $found[0] END);
+DELETE FROM guitar_dimensions WHERE guitar_id = $g.id;
+DELETE FROM guitar_appointments WHERE guitar_id = $g.id;
+DELETE FROM guitar_woods WHERE guitar_id = $g.id;
+DELETE FROM guitar_finish WHERE guitar_id = $g.id;
+DELETE FROM guitar_hardware WHERE guitar_id = $g.id;
+DELETE FROM guitar_setup WHERE guitar_id = $g.id;
+DELETE FROM guitar_case WHERE guitar_id = $g.id;
+DELETE FROM guitar_pickups WHERE guitar_id = $g.id;
+DELETE FROM guitar_controls WHERE guitar_id = $g.id;
+CREATE guitar_dimensions CONTENT { guitar_id: $g.id, scale_length: "24 3/4", nut_width: "1 5/8", neck_profile: "60 C Shape", neck_thickness_1st: ".91", neck_thickness_12th: ".93", fingerboard_radius: "12", fret_count: 22, fret_type: "Jescar 45085 Nickel Silver", binding: "Bound" };
+CREATE guitar_appointments CONTENT { guitar_id: $g.id, binding_body: "Bound body", binding_fingerboard: "1-Ply fingerboard binding", inlays: "Vintage Trapezoid", headstock_veneer: "", other: "" };
+CREATE guitar_woods CONTENT { guitar_id: $g.id, top: "Carved Flame Maple Top", body: "Honduran Mahogany", neck: "Quartersawn Honduran Mahogany", fingerboard: "Rosewood", neck_joint: "", top_carve: "Carved" };
+CREATE guitar_finish CONTENT { guitar_id: $g.id, color: "Vintage Sunburst", type: "Nitrocellulose Lacquer", aging: "", colors: ["Vintage Sunburst","Goldtop"], notes: "" };
+CREATE guitar_hardware CONTENT { guitar_id: $g.id, material: "Nickel", bridge: "Faber ABR-H", tailpiece: "Tailpiece with Collarless Locking Studs", tuners: "Grover Rotomatic", pickguard: "", pickup_rings: "M69 Mounting Rings", notes: "" };
+CREATE guitar_setup CONTENT { guitar_id: $g.id, strings: "Stringjoy 10-46 Pure Nickel", tuning: "Standard", action: "4/64", nut_material: "Unbleached Polished Bone", truss_rod: "2-Way Adjustable" };
+CREATE guitar_case CONTENT { guitar_id: $g.id, type: "Hard case", coa_included: true, notes: "" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "Custom Throbak PAF", winding: "" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Custom Throbak PAF", winding: "" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "CTS 550k Potentiometer" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "CTS 550k Potentiometer" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "Switchcraft" };
+SELECT id, brand, model FROM guitars WHERE id = $g.id;
+SELECT count() AS dim_count FROM guitar_dimensions WHERE guitar_id = $g.id;
+SELECT count() AS pickup_count FROM guitar_pickups WHERE guitar_id = $g.id;
+SELECT count() AS control_count FROM guitar_controls WHERE guitar_id = $g.id;
+SELECT id,brand,model,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1;
+SELECT count() FROM guitar_dimensions WHERE guitar_id = (SELECT id,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1)[0].id;
+SELECT id,brand,model,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1;
+SELECT count() FROM guitar_dimensions WHERE guitar_id = (SELECT id,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1)[0].id;
+SELECT count() FROM guitar_pickups   WHERE guitar_id = (SELECT id,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1)[0].id;
+SELECT count() FROM guitar_controls  WHERE guitar_id = (SELECT id,created_at FROM guitars WHERE brand="Banker" AND model="Ironman CT Standard" ORDER BY created_at DESC LIMIT 1)[0].id;
