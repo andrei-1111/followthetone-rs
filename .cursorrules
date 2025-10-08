@@ -1,0 +1,55 @@
+# Project Rules for Cursor — FollowTheTone
+
+## Stack & Goals
+- Backend: Rust + Actix Web
+- DB: SurrealDB over HTTP (NS: gear, DB: guitars; env-driven)
+- Frontend: Leptos (SSR + hydration) served by Actix
+- APIs live under `/api/*`; Leptos app serves `/` routes.
+- Dev: `cargo leptos watch` (SSR + client), keep REST endpoints working.
+
+## Must-have Dependencies (Cargo.toml)
+[dependencies]
+actix-web = "4"
+actix-files = "0.6"
+actix-cors = "0.7"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dotenvy = "0.15"
+env_logger = "0.11"
+log = "0.4"
+tokio = { version = "1", features = ["rt-multi-thread","macros"] }
+
+# SurrealDB SDK, HTTP protocol
+surrealdb = { version = "2", default-features = false, features = ["protocol-http"] }
+
+# Leptos
+leptos = { version = "*", features = ["serde"] }
+leptos_router = "*"
+leptos_meta = "*"
+leptos_actix = "*"
+
+## Files & Responsibilities
+- `src/config.rs` — reads env: HOST, PORT, SURREAL_URL, SURREAL_NS, SURREAL_DB, SURREAL_USER, SURREAL_PASS.
+- `src/models.rs` — DTOs (e.g., `Guitar { id: Option<Thing>, brand, model, ... }` with `#[serde(default)]` where useful).
+- `src/routes.rs` — JSON APIs under `/api`:
+  - `GET /api/guitars` → list (use `db.select("guitars") -> Vec<Guitar>`).
+  - `GET /api/guitars/{id}` → detail (accept `guitars:<id>` or `<id>`, use `db.select::<Option<Guitar>, _>(...)`).
+- `src/app.rs` — Leptos `App()` with simple routes (`/`, `/guitars`, `/guitars/:id`).
+- `src/lib.rs` — re-export `App`.
+- `src/main.rs` — Actix server:
+  - Build Surreal client: `Surreal<Http>::new(url)`, `signin(Root{...})`, `use_ns/use_db`.
+  - Register `/api/*` routes from `routes::config`.
+  - Serve Leptos SSR at `/` via `leptos_actix::LeptosRoutes`.
+  - Serve static files: `/pkg` and `/assets` from `leptos_options`.
+
+## Code Patterns
+
+### Surreal client (HTTP) in main.rs
+```rust
+use surrealdb::engine::remote::http::Http;
+use surrealdb::opt::auth::Root;
+use surrealdb::Surreal;
+
+let db: Surreal<Http> = Surreal::new(&cfg.surreal_url).await.expect("connect");
+db.signin(Root{ username:&cfg.surreal_user, password:&cfg.surreal_pass }).await.expect("signin");
+db.use_ns(&cfg.surreal_ns).use_db(&cfg.surreal_db).await.expect("use ns/db");

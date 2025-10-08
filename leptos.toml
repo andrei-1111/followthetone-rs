@@ -1,0 +1,35 @@
+[package]
+name = "gear_api"
+version = "0.1.0"
+edition = "2021"
+
+[build]
+# The site root is where cargo-leptos generate will put the built files.
+site_root = "target/site"
+# The site-root is the same as site-root but is used by the dev server for static assets.
+# Typically this would be different in a full-stack app
+site_root = "target/site"
+# The source CSS file. If it ends with .tailwindcss, it will be processed by tailwindcss into a CSS file that will be placed in `site-root`. The filename should be `[package-name].tailwindcss`.
+site_pkg_dir = "target/site/pkg"
+# The source JS file. If it ends with .ts, it will be processed by tsc and then placed in `site-root`. The filename should be `[package-name].ts`.
+site_pkg_dir = "target/site/pkg"
+
+[serve]
+# The port the dev server will run on
+reload_port = 3001
+# The port the dev server will run on
+port = 3000
+# The address the dev server will run on
+address = "127.0.0.1"
+
+[env]
+# The environment Leptos will run in (usually either "development" or "production")
+LEPTOS_ENV = "development"
+# The port the server will run on (not used in development mode with cargo-leptos watch)
+LEPTOS_SITE_ROOT = "target/site"
+# The address the server will run on (not used in development mode with cargo-leptos watch)
+LEPTOS_SITE_PKG_DIR = "target/site/pkg"
+# The port the server will run on (not used in development mode with cargo-leptos watch)
+LEPTOS_SITE_ADDR = "127.0.0.1:3000"
+# The address the server will run on (not used in development mode with cargo-leptos watch)
+LEPTOS_RELOAD_PORT = 3001

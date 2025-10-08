@@ -14,10 +14,10 @@ async fn health() -> impl Responder {
     HttpResponse::Ok().json(serde_json::json!({"ok": true}))
 }
 
-#[get("/guitars")]
+#[get("/api/guitars")]
 async fn list_guitars(db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>) -> impl Responder {
     // SELECT * FROM guitars
-    let res: surrealdb::Result<Vec<Guitar>> = db.select("guitars").await; // :contentReference[oaicite:5]{index=5}
+    let res: surrealdb::Result<Vec<Guitar>> = db.select("guitars").await;
     match res {
         Ok(rows) => HttpResponse::Ok().json(rows),
         Err(e) => HttpResponse::InternalServerError()
@@ -25,7 +25,7 @@ async fn list_guitars(db: web::Data<Surreal<surrealdb::engine::remote::http::Cli
     }
 }
 
-#[get("/guitars/{id}")]
+#[get("/api/guitars/{id}")]
 async fn get_guitar_by_id(
     db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
     path: web::Path<String>,
@@ -39,7 +39,7 @@ async fn get_guitar_by_id(
     };
 
     // SELECT * FROM guitars:<id>
-    let res: surrealdb::Result<Vec<Guitar>> = db.select(rid.as_str()).await; // :contentReference[oaicite:6]{index=6}
+    let res: surrealdb::Result<Vec<Guitar>> = db.select(rid.as_str()).await;
     match res {
         Ok(rows) if !rows.is_empty() => HttpResponse::Ok().json(rows[0].clone()),
         Ok(_) => HttpResponse::NotFound()

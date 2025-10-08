@@ -5,15 +5,20 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
+actix-files = "0.6"
 actix-cors = "0.7"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 dotenvy = "0.15"
-sqlx = { version = "0.7", features = ["runtime-tokio", "postgres", "chrono"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-thiserror = "1"
 env_logger = "0.11"
 log = "0.4"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
-# SurrealDB SDK
-surrealdb = { version = "2", features = ["protocol-http"] }
+# SurrealDB SDK, HTTP protocol
+surrealdb = { version = "2", default-features = false, features = ["protocol-http"] }
+
+# Leptos (compatible with Rust 1.86)
+leptos = "0.6"
+leptos_router = "0.6"
+leptos_meta = "0.6"
+leptos_actix = "0.6"

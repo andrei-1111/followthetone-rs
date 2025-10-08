@@ -1,243 +1,178 @@
-# Gear API - Guitar & Effects Catalog
+# FollowTheTone - Guitar Database
 
-A production-ready REST API built with Rust, Actix Web, and SQLx for managing guitar gear and effects.
+A full-stack Rust application with **Leptos (SSR + hydration)** frontend, **Actix Web** backend, and **SurrealDB** database.
 
-## Features
+## 🏗️ Architecture
 
-- **RESTful API** with Actix Web
-- **Database migrations** with SQLx
-- **PostgreSQL** backend
-- **Docker** support
-- **Production deployment** ready (Fly.io, Railway)
-- **Comprehensive testing** suite
+- **Frontend**: Leptos with SSR + client-side hydration
+- **Backend**: Actix Web serving both API and Leptos SSR
+- **Database**: SurrealDB over HTTP/HTTPS
+- **Routes**:
+  - `/` - Leptos frontend (Home, /guitars, /guitars/:id)
+  - `/api/*` - REST API endpoints
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Rust 1.89+ (run `rustup update` if needed)
-- PostgreSQL 12+
-- SQLx CLI (`cargo install sqlx-cli`)
+- Rust 1.86+ (tested with 1.86.0)
+- SurrealDB instance (remote or local)
 
-### 1) Database Setup
+### 1. Environment Setup
+
+Create/update `.env` file:
 
 ```bash
-# Create the database
-sqlx database create
+# SurrealDB Configuration
+SURREAL_URL=https://followthetone-surreal.fly.dev
+SURREAL_NS=gear
+SURREAL_DB=guitars
+SURREAL_USER=root
+SURREAL_PASS=Password0978
 
-# Run migrations
-sqlx migrate run
+# Server Configuration
+HOST=127.0.0.1
+PORT=8080
 
-# Verify tables were created
-sqlx database drop  # Optional: start fresh
-sqlx database create
-sqlx migrate run
+# Logging
+RUST_LOG=info,actix_web=info
+RUST_BACKTRACE=1
 ```
 
-### 2) Environment Configuration
+### 2. Install Dependencies
 
 ```bash
-# Copy environment template
-cp .env.example .env
+# Install cargo-leptos (optional, for development)
+cargo install cargo-leptos
 
-# Edit with your database credentials
-# DATABASE_URL=postgres://username:password@localhost:5432/gear_db
+# Build dependencies
+cargo build
 ```
 
-### 3) Run the API
+### 3. Run the Application
 
+#### Option A: Standard Cargo Run
 ```bash
-# Development mode
 cargo run
-
-# Production build
-cargo build --release
-./target/release/gear_api
 ```
 
-### 4) Test the API
-
+#### Option B: Leptos Development Mode (if cargo-leptos installed)
 ```bash
-# Health check
-curl http://localhost:8080/health
-
-# List brands
-curl http://localhost:8080/brands
-
-# Search gear
-curl "http://localhost:8080/gear?gear_type=guitar&brand=Fender"
-
-# Get specific gear
-curl http://localhost:8080/gear/fender-stratocaster
+cargo leptos watch
 ```
 
-## SQLx Migrations
+### 4. Access the Application
 
-This project uses SQLx migrations for database schema management.
+- **Frontend**: http://127.0.0.1:8080
+- **API Health**: http://127.0.0.1:8080/health
+- **Guitars API**: http://127.0.0.1:8080/api/guitars
 
-### Migration Commands
+## 📁 Project Structure
 
-```bash
-# Create a new migration
-sqlx migrate add migration_name
+```
+src/
+├── main.rs          # Actix server + Leptos integration
+├── lib.rs           # Re-exports
+├── app.rs           # Leptos App component & routes
+├── config.rs        # Environment configuration
+├── models.rs        # Data models (Guitar, etc.)
+└── routes.rs        # API routes (/api/*)
 
-# Run all pending migrations
-sqlx migrate run
-
-# Revert the last migration
-sqlx migrate revert
-
-# Check migration status
-sqlx migrate info
+leptos.toml          # Leptos configuration
+Cargo.toml           # Dependencies
+.env                 # Environment variables
 ```
 
-### Migration Files
+## 🔧 Development
 
-Migrations are stored in `migrations/` directory:
-- `001_initial_schema.sql` - Initial database structure
-- `002_add_artists.sql` - Add artists table
-- `003_add_indexes.sql` - Performance optimizations
-
-### Adding New Migrations
-
-```bash
-# Example: Add a new table
-sqlx migrate add add_gear_images
-
-# Edit the generated file in migrations/
-# Add your SQL changes
-# Run the migration
-sqlx migrate run
-```
-
-## API Endpoints
-
-### Core Endpoints
+### API Endpoints
 
 - `GET /health` - Health check
-- `GET /` - API info
-- `GET /brands` - List all brands
-- `GET /gear` - Search gear with filters
-- `GET /gear/{slug}` - Get specific gear by slug
-- `POST /gear` - Create new gear item
+- `GET /api/guitars` - List all guitars
+- `GET /api/guitars/{id}` - Get guitar by ID
 
-### Query Parameters
+### Frontend Routes
 
-**GET /gear** supports:
-- `q` - Search term (searches gear names)
-- `gear_type` - Filter by type (guitar, effect, amplifier, accessory)
-- `brand` - Filter by brand name
-- `page` - Page number (default: 1)
-- `page_size` - Items per page (default: 20, max: 200)
+- `/` - Home page
+- `/guitars` - Guitar listing
+- `/guitars/:id` - Guitar details
 
-### Example Requests
+### Hot Reload
+
+If using `cargo leptos watch`:
+- Frontend changes auto-reload
+- Backend changes require restart
+
+### Database Schema
+
+Ensure your SurrealDB has the `guitars` table with schema:
+
+```sql
+DEFINE TABLE guitars SCHEMAFULL;
+
+DEFINE FIELD brand ON guitars TYPE string;
+DEFINE FIELD model ON guitars TYPE string;
+DEFINE FIELD year ON guitars TYPE int;
+DEFINE FIELD created_at ON guitars TYPE datetime DEFAULT time::now();
+DEFINE FIELD updated_at ON guitars TYPE datetime DEFAULT time::now();
+
+DEFINE EVENT guitars_set_updated_at ON TABLE guitars
+WHEN $event = "UPDATE" THEN (
+  UPDATE $after SET updated_at = time::now()
+);
+```
+
+## 🐛 Troubleshooting
+
+### Connection Issues
+
+1. **SurrealDB Connection Failed**
+   - Verify `SURREAL_URL` has correct protocol (`https://` or `http://`)
+   - Check network connectivity to SurrealDB instance
+   - Verify credentials in `.env`
+
+2. **Compilation Errors**
+   - Ensure Rust 1.86+ is installed
+   - Run `cargo clean && cargo build` to clear cache
+
+3. **Leptos Not Loading**
+   - Check browser console for errors
+   - Verify static files are served at `/pkg` and `/assets`
+
+### Common Commands
 
 ```bash
-# Search for Fender guitars
-curl "http://localhost:8080/gear?gear_type=guitar&brand=Fender"
+# Clean build
+cargo clean
 
-# Search for distortion effects
-curl "http://localhost:8080/gear?gear_type=effect&q=distortion"
+# Check compilation
+cargo check
 
-# Paginated results
-curl "http://localhost:8080/gear?page=2&page_size=10"
+# Run with verbose logging
+RUST_LOG=debug cargo run
+
+# Kill existing process
+pkill -f gear_api
 ```
 
-## Development
+## 📦 Dependencies
 
-### Project Structure
+Key dependencies in `Cargo.toml`:
 
-```
-gear_api/
-├── src/
-│   ├── main.rs          # Application entry point
-│   ├── config.rs        # Configuration management
-│   ├── models.rs        # Data models
-│   └── routes.rs        # API routes
-├── migrations/          # SQLx migration files
-├── tests/              # Integration tests
-├── Cargo.toml          # Dependencies
-├── Dockerfile          # Container configuration
-└── fly.toml           # Fly.io deployment config
-```
+- `actix-web = "4"` - Web framework
+- `actix-files = "0.6"` - Static file serving
+- `leptos = "0.6"` - Frontend framework
+- `leptos_actix = "0.6"` - Actix integration
+- `surrealdb = { version = "2", default-features = false, features = ["protocol-http"] }`
 
-### Running Tests
+## 🎯 Next Steps
 
-```bash
-# Unit tests
-cargo test
+1. Add more guitar fields (price, condition, etc.)
+2. Implement CRUD operations
+3. Add search and filtering
+4. Deploy to production
+5. Add authentication
 
-# Integration tests (requires database)
-cargo test --features sqlx/runtime-tokio-rustls
-```
+---
 
-### Code Quality
-
-```bash
-# Format code
-cargo fmt
-
-# Lint code
-cargo clippy
-
-# Check for security issues
-cargo audit
-```
-
-## Deployment
-
-### Docker
-
-```bash
-# Build image
-docker build -t gear-api .
-
-# Run container
-docker run --rm -p 8080:8080 --env-file .env gear-api
-```
-
-### Fly.io
-
-```bash
-# Deploy to Fly.io
-fly launch --no-deploy
-
-# Create Postgres database
-fly postgres create --name geardb --initial-cluster-size 1 --region sin
-
-# Attach database to app
-fly postgres attach --postgres-app geardb
-
-# Deploy
-fly deploy
-```
-
-### Railway
-
-1. Create new Railway project
-2. Add Postgres plugin
-3. Connect your repository
-4. Set `DATABASE_URL` environment variable
-5. Deploy
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | Required |
-| `HOST` | Server bind address | `0.0.0.0` |
-| `PORT` | Server port | `8080` |
-| `RUST_LOG` | Log level | `info` |
-| `CORS_ORIGIN` | CORS allowed origins | `*` |
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Run `cargo test` and `cargo clippy`
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details.
+**Happy coding! 🎸**
