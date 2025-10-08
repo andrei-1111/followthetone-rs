@@ -14,8 +14,11 @@ async fn main() -> std::io::Result<()> {
 
     let cfg = config::AppConfig::from_env();
 
-    // --- SurrealDB client (HTTP) ---
-    let db = Surreal::new::<surrealdb::engine::remote::http::Http>(&cfg.surreal_url).await
+    // Debug: Print the SurrealDB URL
+    println!("🔍 SurrealDB URL: '{}'", cfg.surreal_url);
+
+    // --- SurrealDB client (HTTPS) ---
+    let db = Surreal::new::<surrealdb::engine::remote::http::Https>(&cfg.surreal_url).await
         .expect("connect Surreal");                                // connect() :contentReference[oaicite:3]{index=3}
     db.signin(Root {
         username: &cfg.surreal_user,
