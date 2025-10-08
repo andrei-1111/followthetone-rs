@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use sqlx::PgPool;
+use surrealdb::opt::auth::Root;
+use surrealdb::Surreal;
 
 mod config;
 mod models;
@@ -13,19 +14,22 @@ async fn main() -> std::io::Result<()> {
 
     let cfg = config::AppConfig::from_env();
 
-    let pool = PgPool::connect(&cfg.database_url)
-        .await
-        .expect("Failed to connect to Postgres");
-
-    log::info!("Connected to Postgres");
+    // --- SurrealDB client (HTTP) ---
+    let db = Surreal::new::<surrealdb::engine::remote::http::Http>(&cfg.surreal_url).await
+        .expect("connect Surreal");                                // connect() :contentReference[oaicite:3]{index=3}
+    db.signin(Root {
+        username: &cfg.surreal_user,
+        password: &cfg.surreal_pass
+    }).await.expect("signin");
+    db.use_ns(&cfg.surreal_ns).use_db(&cfg.surreal_db).await
+        .expect("use ns/db");                                      // use_ns/use_db before queries :contentReference[oaicite:4]{index=4}
 
     HttpServer::new(move || {
-        let cors = Cors::permissive(); // tighten for production
-
+        let cors = Cors::permissive();
         App::new()
             .wrap(Logger::default())
             .wrap(cors)
-            .app_data(web::Data::new(pool.clone()))
+            .app_data(web::Data::new(db.clone()))
             .configure(routes::config)
     })
     .bind((cfg.host.as_str(), cfg.port))?

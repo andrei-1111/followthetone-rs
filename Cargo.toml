@@ -14,3 +14,6 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 thiserror = "1"
 env_logger = "0.11"
 log = "0.4"
+
+# SurrealDB SDK
+surrealdb = { version = "2", features = ["protocol-http"] }
