@@ -41,7 +41,7 @@ async fn get_guitar_by_id(
         format!("guitars:{id_str}")
     };
 
-    // SELECT * FROM guitars:<id>
+    // Use db.select with the record ID
     let res: surrealdb::Result<Vec<Guitar>> = db.select(rid.as_str()).await;
     match res {
         Ok(rows) if !rows.is_empty() => HttpResponse::Ok().json(rows[0].clone()),
