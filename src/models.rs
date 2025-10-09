@@ -3,7 +3,7 @@ use surrealdb::sql::Thing; // record id type "table:id"
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Guitar {
-    pub id: Option<Thing>,     // Surreal record id, e.g. guitars:abc...
+    pub id: Option<Thing>, // Surreal record id, e.g. guitars:abc...
     pub brand: String,
     pub model: String,
     #[serde(default)]

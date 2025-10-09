@@ -56,7 +56,12 @@ cargo build
 cargo run
 ```
 
-#### Option B: Leptos Development Mode (if cargo-leptos installed)
+#### Option B: Clean Build and Run (if you encounter issues)
+```bash
+cargo clean && cargo run
+```
+
+#### Option C: Leptos Development Mode (if cargo-leptos installed)
 ```bash
 cargo leptos watch
 ```
@@ -134,6 +139,7 @@ WHEN $event = "UPDATE" THEN (
 2. **Compilation Errors**
    - Ensure Rust 1.86+ is installed
    - Run `cargo clean && cargo build` to clear cache
+   - For connection issues, try `cargo clean && cargo run`
 
 3. **Leptos Not Loading**
    - Check browser console for errors
@@ -142,7 +148,10 @@ WHEN $event = "UPDATE" THEN (
 ### Common Commands
 
 ```bash
-# Clean build
+# Clean build and run (recommended for issues)
+cargo clean && cargo run
+
+# Clean build only
 cargo clean
 
 # Check compilation

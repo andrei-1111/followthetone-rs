@@ -14,7 +14,10 @@ impl AppConfig {
     pub fn from_env() -> Self {
         Self {
             host: env::var("HOST").unwrap_or_else(|_| "127.0.0.1".into()),
-            port: env::var("PORT").ok().and_then(|v| v.parse().ok()).unwrap_or(8080),
+            port: env::var("PORT")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(8080),
             surreal_url: env::var("SURREAL_URL").expect("SURREAL_URL"),
             surreal_ns: env::var("SURREAL_NS").expect("SURREAL_NS"),
             surreal_db: env::var("SURREAL_DB").expect("SURREAL_DB"),

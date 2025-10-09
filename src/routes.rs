@@ -5,8 +5,8 @@ use crate::models::Guitar;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(health)
-       .service(list_guitars)
-       .service(get_guitar_by_id);
+        .service(list_guitars)
+        .service(get_guitar_by_id);
 }
 
 #[get("/health")]
@@ -15,13 +15,16 @@ async fn health() -> impl Responder {
 }
 
 #[get("/api/guitars")]
-async fn list_guitars(db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>) -> impl Responder {
+async fn list_guitars(
+    db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
+) -> impl Responder {
     // SELECT * FROM guitars
     let res: surrealdb::Result<Vec<Guitar>> = db.select("guitars").await;
     match res {
         Ok(rows) => HttpResponse::Ok().json(rows),
-        Err(e) => HttpResponse::InternalServerError()
-                    .json(serde_json::json!({"error": e.to_string()})),
+        Err(e) => {
+            HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
+        }
     }
 }
 
@@ -42,9 +45,11 @@ async fn get_guitar_by_id(
     let res: surrealdb::Result<Vec<Guitar>> = db.select(rid.as_str()).await;
     match res {
         Ok(rows) if !rows.is_empty() => HttpResponse::Ok().json(rows[0].clone()),
-        Ok(_) => HttpResponse::NotFound()
-            .json(serde_json::json!({"error": "not found", "id": rid})),
-        Err(e) => HttpResponse::InternalServerError()
-            .json(serde_json::json!({"error": e.to_string()})),
+        Ok(_) => {
+            HttpResponse::NotFound().json(serde_json::json!({"error": "not found", "id": rid}))
+        }
+        Err(e) => {
+            HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
+        }
     }
 }

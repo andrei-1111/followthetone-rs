@@ -23,14 +23,19 @@ async fn main() -> std::io::Result<()> {
     println!("🔍 SurrealDB URL: '{}'", cfg.surreal_url);
 
     // --- SurrealDB client (HTTPS) ---
-    let db = Surreal::new::<surrealdb::engine::remote::http::Https>(&cfg.surreal_url).await
-        .expect("connect Surreal");                                // connect() :contentReference[oaicite:3]{index=3}
+    let db = Surreal::new::<surrealdb::engine::remote::http::Https>(&cfg.surreal_url)
+        .await
+        .expect("connect Surreal"); // connect() :contentReference[oaicite:3]{index=3}
     db.signin(Root {
         username: &cfg.surreal_user,
-        password: &cfg.surreal_pass
-    }).await.expect("signin");
-    db.use_ns(&cfg.surreal_ns).use_db(&cfg.surreal_db).await
-        .expect("use ns/db");                                      // use_ns/use_db before queries :contentReference[oaicite:4]{index=4}
+        password: &cfg.surreal_pass,
+    })
+    .await
+    .expect("signin");
+    db.use_ns(&cfg.surreal_ns)
+        .use_db(&cfg.surreal_db)
+        .await
+        .expect("use ns/db"); // use_ns/use_db before queries :contentReference[oaicite:4]{index=4}
 
     // Leptos configuration
     let conf = get_configuration(None).await.unwrap();
