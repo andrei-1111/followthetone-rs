@@ -1,101 +1,101 @@
 #V2
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: 'Bridge', type: 'Humbucker', model: 'PAF Humbucker', winding: '' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: 'Volume', detail: 'CTS 550k Potentiometer' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: 'Tone', detail: 'CTS 550k Potentiometer' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: '3-way Toggleswitch', detail: 'Switchcraft' };
--- Summary (optional)
-SELECT id, brand, model FROM guitars WHERE id = $g.id;
-SELECT count() AS pickup_count FROM guitar_pickups WHERE guitar_id = $g.id;
-SELECT count() AS control_count FROM guitar_controls WHERE guitar_id = $g.id;
-INFO FOR DB;
-SELECT * FROM guitars;
--- Add slug field to guitars table
-DEFINE FIELD slug ON guitars TYPE string;
--- Update existing guitars with slug values
--- Add slug field to guitars table
-DEFINE FIELD slug ON guitars TYPE string;
--- Update existing guitars with slug values (using string::slug instead of slugify)
-UPDATE guitars SET slug = string::slug(brand + "-" + model + "-" + year_reference) WHERE slug = NONE;
--- Create index on slug for faster lookups
-DEFINE INDEX slug_idx ON guitars FIELDS slug UNIQUE;
-UPDATE guitars SET slug = string::lowercase(brand + '-' + model + '-' + year_reference);
-SELECT id, brand, model, year_reference FROM guitars LIMIT 3;
-UPDATE guitars SET slug = brand + '-' + model + '-' + year_reference;
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = 'banker-58-spec-v-1958';
-SELECT id, brand, model, slug FROM guitars LIMIT 3;
-UPDATE guitars SET slug = 'test-slug';
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = 'banker-58-spec-v-1958';
--- Add slug field to guitars table
-DEFINE FIELD slug ON guitars TYPE string;
--- Update existing guitars with slug values (using string::slug instead of slugify)
-UPDATE guitars SET slug = string::slug(brand + "-" + model + "-" + year_reference) WHERE slug = NONE;
--- Create index on slug for faster lookups
-DEFINE INDEX slug_idx ON guitars FIELDS slug UNIQUE;
--- Simple slug update without complex string operations
--- Update each record individually with basic slugs
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = "banker-58-spec-v-1958";
-UPDATE guitars:cmq04skqf5ecw3vg8mvd SET slug = "banker-ironman-ct-standard";
-UPDATE guitars:juxnqy7ts6x887t8dk2l SET slug = "test-unit";
--- Show results
+-- Step 2: Backfill slug values (no recursion now that event is removed)
+UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
+-- Step 3: Check for duplicate slugs
+SELECT slug, count() AS c FROM guitars GROUP BY slug ORDER BY c DESC;
+-- Step 4: Fix any duplicate slugs by appending ID suffix
+-- Complete slug field fix migration
+-- Fixes recursive events, type mismatches, and unique constraints
+-- Step 0: Remove the recursive event that's causing infinite loops
+REMOVE EVENT guitars_touch ON TABLE guitars;
+-- Step 1: Make slug optional so NONE values are acceptable
+DEFINE FIELD slug ON TABLE guitars TYPE option<string>;
+-- Step 2: Backfill slug values (no recursion now that event is removed)
+UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
+-- Step 3: Check for duplicate slugs
+SELECT slug, count() AS c FROM guitars GROUP BY slug ORDER BY c DESC;
+-- Step 4: Fix any duplicate slugs by appending ID suffix (using string::slice on id directly)
+UPDATE guitars SET slug = string::slug(brand + "-" + model) + "-" + string::slice(id, -6)
+-- Simple slug field fix migration
+-- Since we have no duplicates, we can skip the complex duplicate handling
+-- Step 0: Remove the recursive event that's causing infinite loops
+REMOVE EVENT guitars_touch ON TABLE guitars;
+-- Step 1: Make slug optional so NONE values are acceptable
+DEFINE FIELD slug ON TABLE guitars TYPE option<string>;
+-- Step 2: Backfill slug values (no recursion now that event is removed)
+UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
+-- Step 3: Create the UNIQUE index (one-line rule)
+DEFINE INDEX slug_idx ON TABLE guitars FIELDS slug UNIQUE;
+-- Step 4: Verify results
 SELECT id, brand, model, slug FROM guitars;
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = 'test-slug';
--- Add slug field to guitars table
-DEFINE FIELD slug ON guitars TYPE string;
--- Update existing guitars with slug values (using string::slug instead of slugify)
-UPDATE guitars SET slug = string::slug(brand + "-" + model + "-" + year_reference) WHERE slug = NONE;
--- Create index on slug for faster lookups
-DEFINE INDEX slug_idx ON guitars FIELDS slug UNIQUE;
--- Manual slug updates - one record at a time
--- This avoids the "excessive computation depth" issue
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = "banker-58-spec-v-1958";
-UPDATE guitars:cmq04skqf5ecw3vg8mvd SET slug = "banker-ironman-ct-standard";  
-UPDATE guitars:juxnqy7ts6x887t8dk2l SET slug = "test-unit";
-UPDATE guitars:xlx55xia6b2alzxk66ft SET slug = "test2-unit";
-INFO FOR DB;
-SELECT * FROM guitars;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Check the table schema to see what fields are defined
-INFO FOR TABLE guitars;
--- Try to update a single record with a simple slug
--- This will help us test if the field exists and can be updated
-UPDATE guitars:7f8oq0nfi7neirahoxpe SET slug = "test-slug-123";
--- Test what the actual slug should be
--- Let's see the exact data format
-SELECT brand, model, year_reference FROM guitars LIMIT 1;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Check the table schema to see what fields are defined
-INFO FOR TABLE guitars;
-INFO FOR DB;
-SELECT * FROM guitars;
-SELECT * FROM guitars LIMIT 1;
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
+-- Fender Custom Shop '61 Strat Wildwood 10 Seed Data
+-- Upsert version for SurrealDB
+-- Create the main guitar record
+CREATE guitars:fender_61_strat_wildwood10 SET  brand = 'Fender Custom Shop',  line = 'Dealer Select Wildwood 10',  model = '61 Strat',  variant = 'Red Sparkle Over 3-Tone Sunburst',  year_reference = '1961',  weight = '7.30 lbs.',  body_style = 'Stratocaster',  slug = 'fender-custom-shop-61-strat-wildwood10';
+-- Create guitar dimensions
+CREATE guitar_dimensions:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  scale_length = '25.5"',  nut_width = '1.650"',  neck_profile = '60 Oval C',  neck_thickness_1st = '.810',  neck_thickness_12th = '.940',  fingerboard_radius = 'Wildwood Custom 10"',  fret_count = 21,  fret_type = '6105 Narrow-Tall',  binding = NONE;
+-- Create guitar woods
+CREATE guitar_woods:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  top = NONE,  body = 'Alder',  neck = 'Quartersawn Maple',  fingerboard = 'AAA Indian Rosewood',  neck_joint = NONE;
+-- Create guitar finish
+CREATE guitar_finish:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  color = 'Red Sparkle Over 3-Tone Sunburst',  type = 'Nitrocellulose Lacquer',  aging = 'Heavy Relic';
+-- Create guitar hardware
+CREATE guitar_hardware:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  material = 'Nickel/Chrome',  bridge = 'Vintage Tremolo',  tailpiece = NONE,  tuners = 'Vintage-Style',  pickguard = NONE;
+-- Create guitar setup
+CREATE guitar_setup:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  strings = NONE,  tuning = NONE,  action = NONE,  nut_material = 'Bone',  truss_rod = NONE;
+-- Create guitar case
+CREATE guitar_case:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  type = 'Limited Edition Hardshell Case with Embroidered Custom Shop Logo',  coa_included = true,  notes = NONE;
+-- Create guitar pickups
+CREATE guitar_pickups:fender_61_strat_wildwood10_neck SET  guitar_id = guitars:fender_61_strat_wildwood10,  position = 'Neck',  type = 'Single-Coil',  model = 'Hand-Wound Wildwood 10 Strat',  winding = NONE;
+CREATE guitar_pickups:fender_61_strat_wildwood10_middle SET  guitar_id = guitars:fender_61_strat_wildwood10,  position = 'Middle',  type = 'Single-Coil',  model = 'Hand-Wound Wildwood 10 Strat',  winding = NONE;
+CREATE guitar_pickups:fender_61_strat_wildwood10_bridge SET  guitar_id = guitars:fender_61_strat_wildwood10,  position = 'Bridge',  type = 'Single-Coil',  model = 'Hand-Wound Wildwood 10 Strat',  winding = NONE;
+-- Create guitar controls
+CREATE guitar_controls:fender_61_strat_wildwood10_volume SET  guitar_id = guitars:fender_61_strat_wildwood10,  name = 'Volume',  detail = NONE;
+CREATE guitar_controls:fender_61_strat_wildwood10_tone1 SET  guitar_id = guitars:fender_61_strat_wildwood10,  name = 'Tone',  detail = NONE;
+CREATE guitar_controls:fender_61_strat_wildwood10_tone2 SET  guitar_id = guitars:fender_61_strat_wildwood10,  name = 'Tone',  detail = NONE;
+CREATE guitar_controls:fender_61_strat_wildwood10_switch SET  guitar_id = guitars:fender_61_strat_wildwood10,  name = '5-way Switch',  detail = NONE;
+-- Create guitar provenance
+CREATE guitar_provenance:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  dealer_series = 'Wildwood 10',  notes = NONE;
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Add slug field to guitars table
-DEFINE FIELD slug ON guitars TYPE string;
--- Update existing guitars with slug values (using string::slug instead of slugify)
-UPDATE guitars SET slug = string::slug(brand + "-" + model + "-" + year_reference) WHERE slug = NONE;
--- Create index on slug for faster lookups
-DEFINE INDEX slug_idx ON guitars FIELDS slug UNIQUE;
+-- Gibson Murphy Lab Wildwood Spec 1960 Les Paul Standard Seed Data
+-- Upsert version for SurrealDB
+-- Create the main guitar record
+CREATE guitars:gibson_1960_les_paul_wildwood_spec SET  brand = 'Gibson Murphy Lab',  line = 'Murphy Lab',  model = 'Wildwood Spec 1960 Les Paul Standard',  variant = '"Beauty of the Burst" Page 151',  year_reference = '1960',  weight = '8.51 lbs.',  body_style = 'Les Paul',  slug = 'gibson-murphy-lab-wildwood-spec-1960-les-paul-standard';
+-- Create guitar dimensions
+CREATE guitar_dimensions:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  scale_length = '24.75"',  nut_width = '1.687"',  neck_profile = '1960 SlimTaper',  neck_thickness_1st = '.840',  neck_thickness_12th = '.950',  fingerboard_radius = '12"',  fret_count = 22,  fret_type = 'Authentic Medium Jumbo',  binding = '1-Ply Royalite';
+-- Create guitar woods
+CREATE guitar_woods:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  top = '2-Piece Hand-Picked Figured Maple (Hot Hide Glue)',  body = '1-Piece Lightweight Mahogany',  neck = 'Solid Mahogany',  fingerboard = 'Indian Rosewood (Hot Hide Glue)',  neck_joint = 'Long Tenon with Hide Glue Fit';
+-- Create guitar finish
+CREATE guitar_finish:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  color = '"Beauty of the Burst" Page 151',  type = 'Light Aged',  aging = 'Light Aged';
+-- Create guitar hardware
+CREATE guitar_hardware:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  material = 'Murphy Lab Light-Aged Nickel',  bridge = 'No-Wire ABR-1 (Nickel-Plated Brass Saddles)',  tailpiece = 'Lightweight Aluminum Stopbar',  tuners = 'Kluson Double-Ring Single-Line',  pickguard = 'Laminated Cellulose Acetate Butyrate';
+-- Create guitar setup
+CREATE guitar_setup:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  strings = NONE,  tuning = NONE,  action = NONE,  nut_material = 'Bone',  truss_rod = NONE;
+-- Create guitar case
+CREATE guitar_case:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  type = 'Brown/Pink Lifton Reissue 5-Latch Case with Wildwood Spec Badge',  coa_included = true,  notes = NONE;
+-- Create guitar pickups
+CREATE guitar_pickups:gibson_1960_les_paul_wildwood_spec_neck SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  position = 'Neck',  type = 'Humbucker',  model = 'Wildwood Spec Custombucker',  winding = NONE;
+CREATE guitar_pickups:gibson_1960_les_paul_wildwood_spec_bridge SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  position = 'Bridge',  type = 'Humbucker',  model = 'Wildwood Spec Custombucker',  winding = NONE;
+-- Create guitar controls
+CREATE guitar_controls:gibson_1960_les_paul_wildwood_spec_volume1 SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  name = 'Volume',  detail = NONE;
+CREATE guitar_controls:gibson_1960_les_paul_wildwood_spec_volume2 SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  name = 'Volume',  detail = NONE;
+CREATE guitar_controls:gibson_1960_les_paul_wildwood_spec_tone1 SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  name = 'Tone',  detail = NONE;
+CREATE guitar_controls:gibson_1960_les_paul_wildwood_spec_tone2 SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  name = 'Tone',  detail = NONE;
+CREATE guitar_controls:gibson_1960_les_paul_wildwood_spec_switch SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  name = '3-way Toggleswitch',  detail = NONE;
+-- Create guitar provenance
+CREATE guitar_provenance:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  dealer_series = 'Wildwood Spec',  notes = NONE;
+-- Create guitar badges
+CREATE guitar_badges:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,  badge = 'Wildwood Spec Badge';
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
