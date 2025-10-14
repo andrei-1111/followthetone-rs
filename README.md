@@ -1,15 +1,12 @@
-# FollowTheTone - Guitar Database
+# FollowTheTone - Guitar Database API
 
-A full-stack Rust application with **Leptos (SSR + hydration)** frontend, **Actix Web** backend, and **SurrealDB** database.
+A REST API built with **Actix Web** and **SurrealDB** for managing guitar collections.
 
 ## 🏗️ Architecture
 
-- **Frontend**: Leptos with SSR + client-side hydration
-- **Backend**: Actix Web serving both API and Leptos SSR
+- **Backend**: Actix Web REST API
 - **Database**: SurrealDB over HTTP/HTTPS
-- **Routes**:
-  - `/` - Leptos frontend (Home, /guitars, /guitars/:id)
-  - `/api/*` - REST API endpoints
+- **Routes**: All endpoints under `/api/*`
 
 ## 🚀 Quick Start
 
@@ -42,33 +39,18 @@ RUST_BACKTRACE=1
 ### 2. Install Dependencies
 
 ```bash
-# Install cargo-leptos (optional, for development)
-cargo install cargo-leptos
-
 # Build dependencies
 cargo build
 ```
 
 ### 3. Run the Application
 
-#### Option A: Standard Cargo Run
 ```bash
 cargo run
 ```
 
-#### Option B: Clean Build and Run (if you encounter issues)
-```bash
-cargo clean && cargo run
-```
+### 4. Access the API
 
-#### Option C: Leptos Development Mode (if cargo-leptos installed)
-```bash
-cargo leptos watch
-```
-
-### 4. Access the Application
-
-- **Frontend**: http://127.0.0.1:8080
 - **API Health**: http://127.0.0.1:8080/health
 - **Guitars API**: http://127.0.0.1:8080/api/guitars
 
@@ -76,14 +58,12 @@ cargo leptos watch
 
 ```
 src/
-├── main.rs          # Actix server + Leptos integration
+├── main.rs          # Actix server + SurrealDB integration
 ├── lib.rs           # Re-exports
-├── app.rs           # Leptos App component & routes
 ├── config.rs        # Environment configuration
 ├── models.rs        # Data models (Guitar, etc.)
 └── routes.rs        # API routes (/api/*)
 
-leptos.toml          # Leptos configuration
 Cargo.toml           # Dependencies
 .env                 # Environment variables
 ```
@@ -95,18 +75,8 @@ Cargo.toml           # Dependencies
 - `GET /health` - Health check
 - `GET /api/guitars` - List all guitars
 - `GET /api/guitars/{id}` - Get guitar by ID
-
-### Frontend Routes
-
-- `/` - Home page
-- `/guitars` - Guitar listing
-- `/guitars/:id` - Guitar details
-
-### Hot Reload
-
-If using `cargo leptos watch`:
-- Frontend changes auto-reload
-- Backend changes require restart
+- `DELETE /api/guitars/{id}` - Delete guitar by ID
+- `POST /api/guitars/{id}/delete` - Delete guitar (form-friendly, redirects to /guitars)
 
 ### Database Schema
 
@@ -141,9 +111,9 @@ WHEN $event = "UPDATE" THEN (
    - Run `cargo clean && cargo build` to clear cache
    - For connection issues, try `cargo clean && cargo run`
 
-3. **Leptos Not Loading**
-   - Check browser console for errors
-   - Verify static files are served at `/pkg` and `/assets`
+3. **API Not Responding**
+   - Check server logs for connection errors
+   - Verify SurrealDB credentials and URL
 
 ### Common Commands
 
@@ -169,10 +139,10 @@ pkill -f gear_api
 Key dependencies in `Cargo.toml`:
 
 - `actix-web = "4"` - Web framework
-- `actix-files = "0.6"` - Static file serving
-- `leptos = "0.6"` - Frontend framework
-- `leptos_actix = "0.6"` - Actix integration
-- `surrealdb = { version = "2", default-features = false, features = ["protocol-http"] }`
+- `actix-cors = "0.7"` - CORS support
+- `surrealdb = { version = "2", features = ["protocol-http"] }` - Database client
+- `reqwest = "0.11"` - HTTP client
+- `serde = "1"` - Serialization
 
 ## 🎯 Next Steps
 

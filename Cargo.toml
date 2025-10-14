@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["ssr"]
-ssr = []
+default = []
 
 [dependencies]
 actix-web = "4"
@@ -21,37 +20,5 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 # SurrealDB SDK, HTTP/HTTPS protocol (enable default features for TLS)
 surrealdb = { version = "2", features = ["protocol-http"] }
 
-# Leptos (compatible with Rust 1.86)
-leptos = "0.6"
-leptos_router = "0.6"
-leptos_meta = "0.6"
-leptos_actix = "0.6"
-
-# HTTP client for frontend requests
+# HTTP client for server
 reqwest = { version = "0.11", features = ["json"] }
-
-[[workspace.metadata.leptos]]
-# The name of the Leptos project
-name = "gear_api"
-# The binary package name
-bin-package = "gear_api"
-# The library package name
-lib-package = "gear_api"
-# The output directory for all compiled Leptos files
-output_dir = "target/site"
-# The site root folder. This is where your index.html file is located.
-site_root = "target/site"
-# The site name. This is used for the <title> tag in your index.html.
-site_name = "FollowTheTone"
-# The port Leptos will serve the frontend at
-site_port = 8080
-# The port Leptos will serve the backend at
-api_port = 8080
-# The file name of the WASM output.
-wasm_name = "gear_api"
-# The CSS file name.
-css_name = "gear_api"
-# The assets directory. This is where your static assets are located.
-assets_dir = "assets"
-# The features to pass to Leptos.
-features = ["ssr"]

@@ -1,12 +1,14 @@
-# ---- Builder (safe) ----
+# ---- Builder ----
 FROM rust:1.86-bookworm AS builder
 WORKDIR /app
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
-# Copy EVERYTHING needed to build the app (incl. src)
-COPY . .
+# Copy dependencies first for better caching
+COPY Cargo.toml Cargo.lock* ./
+RUN cargo fetch
 
-# Build in release mode
+# Copy source and build
+COPY . .
 RUN cargo build --release
 
 # ---- Runtime ----
