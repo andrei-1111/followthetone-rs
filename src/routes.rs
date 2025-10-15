@@ -66,7 +66,21 @@ async fn list_guitars(
     // SELECT * FROM guitars
     let res: surrealdb::Result<Vec<Guitar>> = db.select("guitars").await;
     match res {
-        Ok(rows) => HttpResponse::Ok().json(rows),
+        Ok(rows) => {
+            // Transform guitars to include generated slugs for frontend
+            let guitars_with_slugs: Vec<serde_json::Value> = rows
+                .into_iter()
+                .map(|guitar| {
+                    let generated_slug = guitar.get_slug();
+                    let mut guitar_json = serde_json::to_value(&guitar).unwrap_or_default();
+                    if let serde_json::Value::Object(ref mut map) = guitar_json {
+                        map.insert("slug".to_string(), serde_json::Value::String(generated_slug));
+                    }
+                    guitar_json
+                })
+                .collect();
+            HttpResponse::Ok().json(guitars_with_slugs)
+        }
         Err(e) => {
             HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
         }
@@ -113,7 +127,12 @@ async fn get_guitar_by_slug(
         Ok(rows) => {
             // Find guitar by generated slug
             if let Some(guitar) = rows.into_iter().find(|g| g.get_slug() == slug) {
-                HttpResponse::Ok().json(guitar)
+                // Transform guitar to include generated slug for frontend
+                let mut guitar_json = serde_json::to_value(&guitar).unwrap_or_default();
+                if let serde_json::Value::Object(ref mut map) = guitar_json {
+                    map.insert("slug".to_string(), serde_json::Value::String(guitar.get_slug()));
+                }
+                HttpResponse::Ok().json(guitar_json)
             } else {
                 HttpResponse::NotFound().json(serde_json::json!({"error": "not found", "slug": slug}))
             }

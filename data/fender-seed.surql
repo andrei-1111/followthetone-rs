@@ -114,3 +114,4 @@ CREATE guitar_provenance:fender_61_strat_wildwood10 SET
   guitar_id = guitars:fender_61_strat_wildwood10,
   dealer_series = 'Wildwood 10',
   notes = NONE;
+

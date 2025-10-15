@@ -117,3 +117,4 @@ CREATE guitar_provenance:gibson_1960_les_paul_wildwood_spec SET
 CREATE guitar_badges:gibson_1960_les_paul_wildwood_spec SET
   guitar_id = guitars:gibson_1960_les_paul_wildwood_spec,
   badge = 'Wildwood Spec Badge';
+

@@ -15,3 +15,4 @@ DEFINE INDEX slug_idx ON TABLE guitars FIELDS slug UNIQUE;
 
 -- Step 4: Verify results
 SELECT id, brand, model, slug FROM guitars;
+

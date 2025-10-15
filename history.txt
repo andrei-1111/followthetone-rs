@@ -1,47 +1,4 @@
 #V2
--- Step 2: Backfill slug values (no recursion now that event is removed)
-UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
--- Step 3: Check for duplicate slugs
-SELECT slug, count() AS c FROM guitars GROUP BY slug ORDER BY c DESC;
--- Step 4: Fix any duplicate slugs by appending ID suffix
--- Complete slug field fix migration
--- Fixes recursive events, type mismatches, and unique constraints
--- Step 0: Remove the recursive event that's causing infinite loops
-REMOVE EVENT guitars_touch ON TABLE guitars;
--- Step 1: Make slug optional so NONE values are acceptable
-DEFINE FIELD slug ON TABLE guitars TYPE option<string>;
--- Step 2: Backfill slug values (no recursion now that event is removed)
-UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
--- Step 3: Check for duplicate slugs
-SELECT slug, count() AS c FROM guitars GROUP BY slug ORDER BY c DESC;
--- Step 4: Fix any duplicate slugs by appending ID suffix (using string::slice on id directly)
-UPDATE guitars SET slug = string::slug(brand + "-" + model) + "-" + string::slice(id, -6)
--- Simple slug field fix migration
--- Since we have no duplicates, we can skip the complex duplicate handling
--- Step 0: Remove the recursive event that's causing infinite loops
-REMOVE EVENT guitars_touch ON TABLE guitars;
--- Step 1: Make slug optional so NONE values are acceptable
-DEFINE FIELD slug ON TABLE guitars TYPE option<string>;
--- Step 2: Backfill slug values (no recursion now that event is removed)
-UPDATE guitars SET slug = string::slug(brand + "-" + model) WHERE slug = NONE;
--- Step 3: Create the UNIQUE index (one-line rule)
-DEFINE INDEX slug_idx ON TABLE guitars FIELDS slug UNIQUE;
--- Step 4: Verify results
-SELECT id, brand, model, slug FROM guitars;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Select all guitars to examine data structure
--- This will help us understand why UPDATE operations are failing
-SELECT * FROM guitars;
--- Fender Custom Shop '61 Strat Wildwood 10 Seed Data
--- Upsert version for SurrealDB
--- Create the main guitar record
-CREATE guitars:fender_61_strat_wildwood10 SET  brand = 'Fender Custom Shop',  line = 'Dealer Select Wildwood 10',  model = '61 Strat',  variant = 'Red Sparkle Over 3-Tone Sunburst',  year_reference = '1961',  weight = '7.30 lbs.',  body_style = 'Stratocaster',  slug = 'fender-custom-shop-61-strat-wildwood10';
--- Create guitar dimensions
-CREATE guitar_dimensions:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  scale_length = '25.5"',  nut_width = '1.650"',  neck_profile = '60 Oval C',  neck_thickness_1st = '.810',  neck_thickness_12th = '.940',  fingerboard_radius = 'Wildwood Custom 10"',  fret_count = 21,  fret_type = '6105 Narrow-Tall',  binding = NONE;
--- Create guitar woods
-CREATE guitar_woods:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  top = NONE,  body = 'Alder',  neck = 'Quartersawn Maple',  fingerboard = 'AAA Indian Rosewood',  neck_joint = NONE;
 -- Create guitar finish
 CREATE guitar_finish:fender_61_strat_wildwood10 SET  guitar_id = guitars:fender_61_strat_wildwood10,  color = 'Red Sparkle Over 3-Tone Sunburst',  type = 'Nitrocellulose Lacquer',  aging = 'Heavy Relic';
 -- Create guitar hardware
@@ -99,3 +56,46 @@ CREATE guitar_badges:gibson_1960_les_paul_wildwood_spec SET  guitar_id = guitars
 -- Select all guitars to examine data structure
 -- This will help us understand why UPDATE operations are failing
 SELECT * FROM guitars;
+-- Select all guitars to examine data structure
+-- This will help us understand why UPDATE operations are failing
+SELECT * FROM guitars;
+-- Get complete database schema
+-- This will show all table definitions, fields, indexes, and events
+-- Get database-level information
+INFO FOR DB;
+-- Get namespace information
+INFO FOR NS;
+-- Get table information for each table
+INFO FOR TABLE guitars;
+INFO FOR TABLE images;
+INFO FOR TABLE guitar_dimensions;
+INFO FOR TABLE guitar_appointments;
+INFO FOR TABLE guitar_woods;
+INFO FOR TABLE guitar_finish;
+INFO FOR TABLE guitar_hardware;
+INFO FOR TABLE guitar_setup;
+INFO FOR TABLE guitar_case;
+INFO FOR TABLE guitar_pickups;
+INFO FOR TABLE guitar_controls;
+INFO FOR TABLE guitar_badges;
+INFO FOR TABLE guitar_provenance;
+-- Get complete database schema
+-- This will show all table definitions, fields, indexes, and events
+-- Get database-level information
+INFO FOR DB;
+-- Get namespace information
+INFO FOR NS;
+-- Get table information for each table
+INFO FOR TABLE guitars;
+INFO FOR TABLE images;
+INFO FOR TABLE guitar_dimensions;
+INFO FOR TABLE guitar_appointments;
+INFO FOR TABLE guitar_woods;
+INFO FOR TABLE guitar_finish;
+INFO FOR TABLE guitar_hardware;
+INFO FOR TABLE guitar_setup;
+INFO FOR TABLE guitar_case;
+INFO FOR TABLE guitar_pickups;
+INFO FOR TABLE guitar_controls;
+INFO FOR TABLE guitar_badges;
+INFO FOR TABLE guitar_provenance;
