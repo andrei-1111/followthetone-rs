@@ -97,6 +97,57 @@ WHEN $event = "UPDATE" THEN (
 );
 ```
 
+### 🧭 SurrealDB schema workflow (add/verify/export)
+
+1) Make changes live
+
+```surql
+-- Add a new field to an existing table
+DEFINE FIELD new_field ON guitars TYPE option<string>;
+
+-- Add a new table and its fields
+DEFINE TABLE my_table SCHEMAFULL;
+DEFINE FIELD name ON my_table TYPE string;
+
+-- Optional index
+DEFINE INDEX idx_my_field ON guitars FIELDS new_field;
+```
+
+Run via helper script:
+
+```bash
+./run_cmd.sh some_change.surql
+```
+
+2) Verify the change
+
+```bash
+# Full DB + NS info
+./run_cmd.sh get_schema.surql               # prints
+./run_cmd.sh get_schema.surql --export      # saves to data/schema_info_*.txt
+
+# Or per-table (CLI directly)
+surreal sql --conn "$SURREAL_URL" --user "$SURREAL_USER" --pass "$SURREAL_PASS" \
+  --ns "$SURREAL_NS" --db "$SURREAL_DB" --pretty "INFO FOR TABLE guitars;"
+```
+
+3) Persist in repo
+
+- Append the same DEFINE statements to `sql_commands/create_current_schema.surql`.
+- Optionally add a dated migration file under `sql_commands/` (e.g., `20251015_add_new_field.surql`) and run it with `./run_cmd.sh`.
+
+4) Recreate schema on a fresh DB (idempotent)
+
+```bash
+./run_cmd.sh create_current_schema.surql
+```
+
+Short reference:
+
+- Export live schema info → `./run_cmd.sh get_schema.surql --export`
+- Update live schema → add `DEFINE` statements and `./run_cmd.sh <file>.surql`
+- Keep repo schema current → edit `sql_commands/create_current_schema.surql`
+
 ## 🐛 Troubleshooting
 
 ### Connection Issues

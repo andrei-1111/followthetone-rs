@@ -1,0 +1,552 @@
+[
+  {
+    "_links": {
+      "cart": {
+        "href": "https://api.reverb.com/api/cart/92119042"
+      },
+      "edit": {
+        "href": "https://api.reverb.com/api/listings/92119042-gibson-heritage-reissue-flying-v-1982-natural/edit"
+      },
+      "make_offer": {
+        "href": "https://api.reverb.com/api/listings/92119042-gibson-heritage-reissue-flying-v-1982-natural/offer",
+        "method": "POST"
+      },
+      "photo": {
+        "href": "https://rvb-img.reverb.com/image/upload/s--wp9NoBoZ--/a_0/f_auto,t_large/v1757345115/mxhzubpyoksbmjrg8tlh.jpg"
+      },
+      "self": {
+        "href": "https://api.reverb.com/api/listings/92119042-gibson-heritage-reissue-flying-v-1982-natural"
+      },
+      "watchlist": {
+        "href": "https://api.reverb.com/api/wants/92119042-gibson-heritage-reissue-flying-v-1982-natural"
+      },
+      "web": {
+        "href": "https://reverb.com/item/92119042-gibson-heritage-reissue-flying-v-1982-natural"
+      }
+    },
+    "auction": false,
+    "buyer_price": {
+      "amount": "9999.00",
+      "amount_cents": 999900,
+      "currency": "USD",
+      "display": "$9,999",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "categories": [
+      {
+        "full_name": "Electric Guitars / Solid Body",
+        "uuid": "e57deb7a-382b-4e18-a008-67d4fbcb2879"
+      }
+    ],
+    "condition": {
+      "display_name": "Very Good",
+      "slug": "very-good",
+      "uuid": "ae4d9114-1bd7-4ec5-a4ba-6653af5ac84d"
+    },
+    "created_at": "2025-09-08T10:24:24-05:00",
+    "description": "<p>Serial  C 003  1982 Gibson Heritage Reissue Flying V  Korina Natural finish</p><p>Former owner bought from us in 82/83 and marked his initials in back of body. Very faint but there. </p>",
+    "finish": "Natural",
+    "has_inventory": false,
+    "id": 92119042,
+    "inventory": 1,
+    "listing_currency": "USD",
+    "make": "Gibson",
+    "model": "Heritage Reissue Flying V",
+    "offers_enabled": true,
+    "photos": [
+      {
+        "_links": {
+          "full": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--wp9NoBoZ--/a_0/f_auto,t_large/v1757345115/mxhzubpyoksbmjrg8tlh.jpg"
+          },
+          "large_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--wp9NoBoZ--/a_0/f_auto,t_large/v1757345115/mxhzubpyoksbmjrg8tlh.jpg"
+          },
+          "small_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--FErPPKGz--/a_0/t_card-square/v1757345115/mxhzubpyoksbmjrg8tlh.jpg"
+          },
+          "thumbnail": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--FErPPKGz--/a_0/t_card-square/v1757345115/mxhzubpyoksbmjrg8tlh.jpg"
+          }
+        }
+      }
+    ],
+    "price": {
+      "amount": "9999.00",
+      "amount_cents": 999900,
+      "currency": "USD",
+      "display": "$9,999",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "price_guide_id": "3032",
+    "published_at": "2025-09-08T10:35:23-05:00",
+    "shipping": {
+      "free_expedited_shipping": false,
+      "initial_offer_rate": {
+        "carrier_calculated": false,
+        "destination_postal_code_needed": false,
+        "rate": {
+          "display": {
+            "amount": "100.00",
+            "amount_cents": 10000,
+            "currency": "USD",
+            "display": "$100",
+            "symbol": "$"
+          },
+          "original": {
+            "amount": "100.00",
+            "amount_cents": 10000,
+            "currency": "USD",
+            "display": "$100",
+            "symbol": "$"
+          }
+        },
+        "region_code": "US_CON",
+        "regional": false
+      },
+      "local": false,
+      "rates": [
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "100.00",
+            "amount_cents": 10000,
+            "currency": "USD",
+            "display": "$100",
+            "symbol": "$"
+          },
+          "region_code": "US_CON",
+          "regional": false
+        }
+      ],
+      "user_region_rate": {
+        "carrier_calculated": false,
+        "destination_postal_code_needed": false,
+        "incremental_rate": {
+          "amount": "100.00",
+          "amount_cents": 10000,
+          "currency": "USD",
+          "display": "$100",
+          "symbol": "$"
+        },
+        "rate": {
+          "amount": "100.00",
+          "amount_cents": 10000,
+          "currency": "USD",
+          "display": "$100",
+          "symbol": "$"
+        },
+        "region_code": "US_CON",
+        "regional": false
+      }
+    },
+    "shop": {
+      "preferred_seller": true,
+      "slug": "music-6000"
+    },
+    "shop_id": 56241,
+    "shop_name": "Music 6000",
+    "state": {
+      "description": "Live",
+      "slug": "live"
+    },
+    "title": "Gibson Heritage Reissue Flying V 1982 - Natural",
+    "us_outlet": false,
+    "year": "1982"
+  },
+  {
+    "_links": {
+      "cart": {
+        "href": "https://api.reverb.com/api/cart/90500611"
+      },
+      "edit": {
+        "href": "https://api.reverb.com/api/listings/90500611-gibson-flying-v-heritage-korina-reissue-1982/edit"
+      },
+      "make_offer": {
+        "href": "https://api.reverb.com/api/listings/90500611-gibson-flying-v-heritage-korina-reissue-1982/offer",
+        "method": "POST"
+      },
+      "photo": {
+        "href": "https://rvb-img.reverb.com/image/upload/s--r-wVpBZY--/a_0/f_auto,t_large/v1748947111/zkhvjffhamge93jnmnyn.jpg"
+      },
+      "self": {
+        "href": "https://api.reverb.com/api/listings/90500611-gibson-flying-v-heritage-korina-reissue-1982"
+      },
+      "watchlist": {
+        "href": "https://api.reverb.com/api/wants/90500611-gibson-flying-v-heritage-korina-reissue-1982"
+      },
+      "web": {
+        "href": "https://reverb.com/item/90500611-gibson-flying-v-heritage-korina-reissue-1982"
+      }
+    },
+    "auction": false,
+    "buyer_price": {
+      "amount": "12514.13",
+      "amount_cents": 1251413,
+      "currency": "USD",
+      "display": "$12,514.13",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "categories": [
+      {
+        "full_name": "Electric Guitars / Solid Body",
+        "uuid": "e57deb7a-382b-4e18-a008-67d4fbcb2879"
+      }
+    ],
+    "condition": {
+      "display_name": "Very Good",
+      "slug": "very-good",
+      "uuid": "ae4d9114-1bd7-4ec5-a4ba-6653af5ac84d"
+    },
+    "created_at": "2025-06-03T05:13:42-05:00",
+    "description": "<p><b><strong>1982 Gibson Heritage Series Flying V </strong></b></p><p>This is a factory-original 1982 Gibson <i><em>Heritage Series Flying V</em></i>, part of a limited reissue run from Gibson’s early 1980s Nashville production. It retains all original hardware, finish, electronics, and pickups — with no signs of structural repair or modification.</p><p>🔍 Key Details:</p><p><b><strong>Serial Number</strong></b>: C154 (stamped on the back of the headstock)<br><b><strong>Finish</strong></b>: Antique Natural (marked “Ant. Nat.” in body cavity)<br><b><strong>Case</strong></b>: Original Gibson “chainsaw” case (with minor cosmetic repair)</p><p>✅ Structural Integrity</p><ul><li>Original <b><strong>set-neck construction</strong></b> with a long tenon is visible through the neck pickup cavity.</li><li>No signs of a <b><strong>neck reset</strong></b>, break, or structural damage. The internal wood is clean, with original tool marks and factory glue visible.</li><li>Internal markings include red/black factory stamps, typical of early 1980s Nashville builds.</li></ul><p>🔌 Electronics</p><ul><li>All <b><strong>CTS pots</strong></b> are original and date-coded:</li><li><ul><li>1378030 = 30th week of 1980</li><li>1378145 = 45th week of 1981</li></ul></li><li>Original <b><strong>ceramic disc tone caps</strong></b> (HP 223Z 100V)</li><li>Untouched solder joints and <b><strong>original cloth/PVC/braided wiring</strong></b></li><li>Fully functional <b><strong>Switchcraft-style toggle</strong></b> with correct felt dampers</li></ul><p>🎸 Pickups</p><ul><li><b><strong>Original Tim Shaw-era humbuckers</strong></b>, stamped 1531182 and 1541182</li><li>These are Gibson's most collectible early 1980s humbuckers, known for their articulate midrange and vintage voicing</li><li>Correct double-row pole screws and braided leads</li></ul><p>🧳 Case</p><ul><li>The original <b><strong>Gibson chainsaw case</strong></b> is included and functional</li><li>One area on the lid has been professionally <b><strong>repaired</strong></b>; the case is still secure and latches close as they should</li></ul><p>📌 Finish Checking (Common, Age-Related)</p><p>This guitar shows light <b><strong>lacquer checking</strong></b> around the neck joint — common in vintage Gibsons with nitro finishes. These checks are:</p><ul><li><b><strong>Purely cosmetic</strong></b></li><li>Due to <b><strong>natural aging and wood expansion/contraction</strong></b></li><li><b><strong>Not structural</strong></b> (confirmed by inspection of the tenon and body cavity)</li></ul><p>This is expected and acceptable on a well-preserved instrument of this vintage and does not affect tone or playability.</p><p>This Flying V is a well-preserved, <i><em>fully original example</em></i> of an early '80s Gibson reissue with no alterations. Structurally solid, electronically untouched, and collector-grade correct — this is a textbook specimen of a Heritage Series Flying V with rare Tim Shaw pickups.</p>",
+    "finish": "Natural",
+    "has_inventory": false,
+    "id": 90500611,
+    "inventory": 1,
+    "listing_currency": "GBP",
+    "make": "Gibson",
+    "model": "Flying V Heritage Korina Reissue",
+    "offers_enabled": true,
+    "photos": [
+      {
+        "_links": {
+          "full": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--r-wVpBZY--/a_0/f_auto,t_large/v1748947111/zkhvjffhamge93jnmnyn.jpg"
+          },
+          "large_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--r-wVpBZY--/a_0/f_auto,t_large/v1748947111/zkhvjffhamge93jnmnyn.jpg"
+          },
+          "small_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--T9vZZR8R--/a_0/t_card-square/v1748947111/zkhvjffhamge93jnmnyn.jpg"
+          },
+          "thumbnail": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--T9vZZR8R--/a_0/t_card-square/v1748947111/zkhvjffhamge93jnmnyn.jpg"
+          }
+        }
+      }
+    ],
+    "price": {
+      "amount": "12514.13",
+      "amount_cents": 1251413,
+      "currency": "USD",
+      "display": "$12,514.13",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "published_at": "2025-06-03T08:06:37-05:00",
+    "shipping": {
+      "free_expedited_shipping": false,
+      "initial_offer_rate": {
+        "carrier_calculated": false,
+        "destination_postal_code_needed": false,
+        "rate": {
+          "display": {
+            "amount": "0.00",
+            "amount_cents": 0,
+            "currency": "USD",
+            "display": "FREE",
+            "symbol": "$"
+          },
+          "original": {
+            "amount": "0.00",
+            "amount_cents": 0,
+            "currency": "GBP",
+            "display": "FREE",
+            "symbol": "£"
+          }
+        },
+        "regional": false
+      },
+      "local": true,
+      "rates": []
+    },
+    "shop": {
+      "preferred_seller": false,
+      "slug": "roberts-shop-346"
+    },
+    "shop_id": 319257,
+    "shop_name": "Robert's Shop",
+    "state": {
+      "description": "Live",
+      "slug": "live"
+    },
+    "title": "Gibson Flying V Heritage Korina Reissue 1982",
+    "us_outlet": false,
+    "year": "1981-1983"
+  },
+  {
+    "_links": {
+      "cart": {
+        "href": "https://api.reverb.com/api/cart/81973171"
+      },
+      "edit": {
+        "href": "https://api.reverb.com/api/listings/81973171-gibson-flying-v-heritage-korina-reissue-1982-natural/edit"
+      },
+      "photo": {
+        "href": "https://rvb-img.reverb.com/image/upload/s--XP95lg1X--/a_0/f_auto,t_large/v1715062636/iu6br2x09ltxaiapu4fb.jpg"
+      },
+      "self": {
+        "href": "https://api.reverb.com/api/listings/81973171-gibson-flying-v-heritage-korina-reissue-1982-natural"
+      },
+      "watchlist": {
+        "href": "https://api.reverb.com/api/wants/81973171-gibson-flying-v-heritage-korina-reissue-1982-natural"
+      },
+      "web": {
+        "href": "https://reverb.com/item/81973171-gibson-flying-v-heritage-korina-reissue-1982-natural"
+      }
+    },
+    "auction": false,
+    "buyer_price": {
+      "amount": "13814.12",
+      "amount_cents": 1381412,
+      "currency": "USD",
+      "display": "$13,814.12",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "categories": [
+      {
+        "full_name": "Electric Guitars / Solid Body",
+        "uuid": "e57deb7a-382b-4e18-a008-67d4fbcb2879"
+      }
+    ],
+    "condition": {
+      "display_name": "Very Good",
+      "slug": "very-good",
+      "uuid": "ae4d9114-1bd7-4ec5-a4ba-6653af5ac84d"
+    },
+    "created_at": "2024-05-07T01:16:22-05:00",
+    "description": "<p>We are a used music store in Hiroshima.</p><p>-------------------------------------------------------------------</p><p>A very rare Gibson Flying V Heritage Korina Reissue produced around 1981 to 1983, featuring an early specification with an A serial number.</p><p><br></p><p>It boasts a 3-piece korina body, a 3-piece korina neck with 21-fret joint, inheriting the specifications of the 1970s, and a rosewood fingerboard with precious korina wood.</p><p><br></p><p>With features like the headstock logo, ABR-1 bridge, V-shaped plate, and rubber on the body side, it closely resembles the original specs and exudes a great atmosphere.</p><p><br></p><p>*The tuners have been replaced.</p><p><br></p><p>Frets: 60% with some wear</p><p>Neck: Almost straight</p><p>Weight: 2.71 kg</p><p>Overall, it has started to develop weather checking.</p><p><br></p><p>*Comes with original hard case.</p><p><br></p><p><br></p><p><br></p><p>If you have any questions or concerns, which might  be difficult to point out from pictures, please feel free to contact us.</p><p><br></p><p>*All accessories are showed in the pictures.</p><p>*Operation check has been done.</p><p><br></p><p>We would try to update the information as soon as possible. </p><p>However, all the items are on sale at the store and the online same time, please forgive us if the item is already sold out.</p>",
+    "finish": "Natural",
+    "has_inventory": false,
+    "id": 81973171,
+    "inventory": 1,
+    "listing_currency": "JPY",
+    "make": "Gibson",
+    "model": "Flying V Heritage Korina Reissue",
+    "offers_enabled": false,
+    "photos": [
+      {
+        "_links": {
+          "full": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--XP95lg1X--/a_0/f_auto,t_large/v1715062636/iu6br2x09ltxaiapu4fb.jpg"
+          },
+          "large_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--XP95lg1X--/a_0/f_auto,t_large/v1715062636/iu6br2x09ltxaiapu4fb.jpg"
+          },
+          "small_crop": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--xr2a2AKo--/a_0/t_card-square/v1715062636/iu6br2x09ltxaiapu4fb.jpg"
+          },
+          "thumbnail": {
+            "href": "https://rvb-img.reverb.com/image/upload/s--xr2a2AKo--/a_0/t_card-square/v1715062636/iu6br2x09ltxaiapu4fb.jpg"
+          }
+        }
+      }
+    ],
+    "price": {
+      "amount": "13814.12",
+      "amount_cents": 1381412,
+      "currency": "USD",
+      "display": "$13,814.12",
+      "symbol": "$",
+      "tax_included": false
+    },
+    "published_at": "2024-05-07T01:22:00-05:00",
+    "shipping": {
+      "free_expedited_shipping": false,
+      "initial_offer_rate": {
+        "carrier_calculated": false,
+        "destination_postal_code_needed": false,
+        "rate": {
+          "display": {
+            "amount": "169.74",
+            "amount_cents": 16974,
+            "currency": "USD",
+            "display": "$169.74",
+            "symbol": "$"
+          },
+          "original": {
+            "amount": "24700",
+            "amount_cents": 24700,
+            "currency": "JPY",
+            "display": "¥24,700",
+            "symbol": "¥"
+          }
+        },
+        "region_code": "US",
+        "regional": false
+      },
+      "local": false,
+      "rates": [
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "13.74",
+            "amount_cents": 1374,
+            "currency": "USD",
+            "display": "$13.74",
+            "symbol": "$"
+          },
+          "region_code": "JP",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "169.74",
+            "amount_cents": 16974,
+            "currency": "USD",
+            "display": "$169.74",
+            "symbol": "$"
+          },
+          "region_code": "US",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "187.61",
+            "amount_cents": 18761,
+            "currency": "USD",
+            "display": "$187.61",
+            "symbol": "$"
+          },
+          "region_code": "AFRICA",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "67.35",
+            "amount_cents": 6735,
+            "currency": "USD",
+            "display": "$67.35",
+            "symbol": "$"
+          },
+          "region_code": "ASIA",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "147.06",
+            "amount_cents": 14706,
+            "currency": "USD",
+            "display": "$147.06",
+            "symbol": "$"
+          },
+          "region_code": "EUR_NON_EU",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "147.06",
+            "amount_cents": 14706,
+            "currency": "USD",
+            "display": "$147.06",
+            "symbol": "$"
+          },
+          "region_code": "EUR_EU",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "147.06",
+            "amount_cents": 14706,
+            "currency": "USD",
+            "display": "$147.06",
+            "symbol": "$"
+          },
+          "region_code": "NORTH_AMERICA",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "147.06",
+            "amount_cents": 14706,
+            "currency": "USD",
+            "display": "$147.06",
+            "symbol": "$"
+          },
+          "region_code": "OCEANIA",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "187.61",
+            "amount_cents": 18761,
+            "currency": "USD",
+            "display": "$187.61",
+            "symbol": "$"
+          },
+          "region_code": "SOUTH_AMERICA",
+          "regional": false
+        },
+        {
+          "carrier_calculated": false,
+          "destination_postal_code_needed": false,
+          "rate": {
+            "amount": "192.42",
+            "amount_cents": 19242,
+            "currency": "USD",
+            "display": "$192.42",
+            "symbol": "$"
+          },
+          "region_code": "XX",
+          "regional": false
+        }
+      ],
+      "user_region_rate": {
+        "carrier_calculated": false,
+        "destination_postal_code_needed": false,
+        "incremental_rate": {
+          "amount": "169.74",
+          "amount_cents": 16974,
+          "currency": "USD",
+          "display": "$169.74",
+          "symbol": "$"
+        },
+        "rate": {
+          "amount": "169.74",
+          "amount_cents": 16974,
+          "currency": "USD",
+          "display": "$169.74",
+          "symbol": "$"
+        },
+        "region_code": "US",
+        "regional": false
+      }
+    },
+    "shop": {
+      "preferred_seller": true,
+      "slug": "kakerus-gear-bazaar"
+    },
+    "shop_id": 891298,
+    "shop_name": "MARUYA",
+    "state": {
+      "description": "Live",
+      "slug": "live"
+    },
+    "title": "Gibson Flying V Heritage Korina Reissue 1982  Natural",
+    "us_outlet": false,
+    "year": "1981-1983"
+  }
+]
