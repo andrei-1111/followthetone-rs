@@ -53,3 +53,89 @@ use surrealdb::Surreal;
 let db: Surreal<Http> = Surreal::new(&cfg.surreal_url).await.expect("connect");
 db.signin(Root{ username:&cfg.surreal_user, password:&cfg.surreal_pass }).await.expect("signin");
 db.use_ns(&cfg.surreal_ns).use_db(&cfg.surreal_db).await.expect("use ns/db");
+```
+
+## SurQL Import Rules
+
+### CLI Compatibility Requirements
+- **NO hyphens in record IDs**: Use `guitars:banker_leslie` NOT `guitars:banker-leslie`
+- **NO complex conditionals**: Avoid `IF/THEN/ELSE` blocks - use simple `CREATE` statements
+- **NO scripting functions**: No `function` definitions or `CALL` statements
+- **Terminate all statements**: Every statement must end with semicolon (`;`)
+- **Use deterministic IDs**: Prefer explicit record IDs over auto-generated ones
+
+### Data Import Pattern
+```surql
+-- Main guitar record (idempotent - won't create if exists)
+CREATE guitars:brand_model CONTENT {
+  brand: "Brand Name",
+  model: "Model Name",
+  slug: "model-slug",
+  line: "Guitar Line",
+  body_style: "Body Style"
+} IF NOT EXISTS;
+
+-- Related 1:1 tables (use guitar_id foreign key)
+CREATE guitar_woods CONTENT {
+  guitar_id: guitars:brand_model,
+  body: "Body Wood",
+  neck: "Neck Wood",
+  fingerboard: "Fingerboard Wood"
+};
+```
+
+### Schema Compliance
+- Follow existing schema structure from `data/schema.surql`
+- Each guitar gets main record + related 1:1 tables
+- Use proper field names matching schema definitions
+- Handle optional fields with empty strings if missing
+
+### Preventing Duplicate Records
+
+#### Method 1: `IF NOT EXISTS` (Recommended)
+```surql
+-- Won't create if record already exists
+CREATE guitars:banker_leslie CONTENT {
+  brand: "Banker",
+  model: "Leslie"
+} IF NOT EXISTS;
+```
+
+#### Method 2: `UPDATE` with `ON DUPLICATE KEY`
+```surql
+-- Updates existing or creates new
+UPDATE guitars:banker_leslie CONTENT {
+  brand: "Banker",
+  model: "Leslie",
+  updated_at: time::now()
+} ON DUPLICATE KEY UPDATE updated_at = time::now();
+```
+
+#### Method 3: Check before create (for CLI compatibility)
+```surql
+-- Check if exists first
+LET $exists = (SELECT id FROM guitars WHERE brand = "Banker" AND model = "Leslie");
+IF $exists = [] THEN {
+  CREATE guitars:banker_leslie CONTENT {
+    brand: "Banker",
+    model: "Leslie"
+  };
+};
+```
+
+#### Method 4: Use unique constraints in schema
+```surql
+-- In schema.surql - prevents duplicates at DB level
+DEFINE INDEX idx_guitars_brand_model ON TABLE guitars COLUMNS brand, model UNIQUE;
+```
+
+### Import Command
+```bash
+# Load environment variables
+set -a; source .env; set +a
+
+# Run import script
+surreal sql --conn "https://$SURREAL_URL" --user "$SURREAL_USER" --pass "$SURREAL_PASS" \
+  --ns "$SURREAL_NS" --db "$SURREAL_DB" \
+  < data/import_script.surql
+```

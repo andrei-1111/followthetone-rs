@@ -1,101 +1,101 @@
 #V2
--- ======================
--- 1:1 detail tables
--- ======================
--- Dimensions
-DEFINE TABLE guitar_dimensions TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id            ON guitar_dimensions TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD scale_length         ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD nut_width            ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD neck_profile         ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD neck_thickness_1st   ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD neck_thickness_12th  ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD fingerboard_radius   ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD fret_count           ON guitar_dimensions TYPE option<number> PERMISSIONS FULL;
-DEFINE FIELD fret_type            ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD binding              ON guitar_dimensions TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_dimensions_guitar ON guitar_dimensions FIELDS guitar_id UNIQUE;
--- Appointments
-DEFINE TABLE guitar_appointments TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id           ON guitar_appointments TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD binding_body        ON guitar_appointments TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD binding_fingerboard ON guitar_appointments TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD inlays              ON guitar_appointments TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD headstock_veneer    ON guitar_appointments TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD other               ON guitar_appointments TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_appointments_guitar ON guitar_appointments FIELDS guitar_id UNIQUE;
--- Woods
-DEFINE TABLE guitar_woods TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id    ON guitar_woods TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD top          ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD body         ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD neck         ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD fingerboard  ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD neck_joint   ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD top_carve    ON guitar_woods TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_woods_guitar ON guitar_woods FIELDS guitar_id UNIQUE;
--- Finish
-DEFINE TABLE guitar_finish TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id  ON guitar_finish TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD color      ON guitar_finish TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD type       ON guitar_finish TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD aging      ON guitar_finish TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD colors     ON guitar_finish TYPE option<array<string>> PERMISSIONS FULL;
-DEFINE FIELD colors[*]  ON guitar_finish TYPE string PERMISSIONS FULL;
-DEFINE FIELD notes      ON guitar_finish TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_finish_guitar ON guitar_finish FIELDS guitar_id UNIQUE;
--- Hardware
-DEFINE TABLE guitar_hardware TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id     ON guitar_hardware TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD material      ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD bridge        ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD tailpiece     ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD tuners        ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD pickguard     ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD pickup_rings  ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD notes         ON guitar_hardware TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_hardware_guitar ON guitar_hardware FIELDS guitar_id UNIQUE;
--- Setup
-DEFINE TABLE guitar_setup TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id     ON guitar_setup TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD strings       ON guitar_setup TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD tuning        ON guitar_setup TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD action        ON guitar_setup TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD nut_material  ON guitar_setup TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD truss_rod     ON guitar_setup TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_setup_guitar ON guitar_setup FIELDS guitar_id UNIQUE;
--- Case / COA
-DEFINE TABLE guitar_case TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id     ON guitar_case TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD type          ON guitar_case TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD coa_included  ON guitar_case TYPE option<bool> PERMISSIONS FULL;
-DEFINE FIELD notes         ON guitar_case TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX uniq_case_guitar ON guitar_case FIELDS guitar_id UNIQUE;
--- ======================
--- 1:N detail tables
--- ======================
--- Pickups
-DEFINE TABLE guitar_pickups TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id  ON guitar_pickups TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD position   ON guitar_pickups TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD type       ON guitar_pickups TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD model      ON guitar_pickups TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD winding    ON guitar_pickups TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX idx_pickups_guitar ON guitar_pickups FIELDS guitar_id;
--- Controls
-DEFINE TABLE guitar_controls TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id  ON guitar_controls TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD name       ON guitar_controls TYPE string PERMISSIONS FULL;
-DEFINE FIELD detail     ON guitar_controls TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX idx_controls_guitar ON guitar_controls FIELDS guitar_id;
--- Badges
-DEFINE TABLE guitar_badges TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id  ON guitar_badges TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD badge      ON guitar_badges TYPE string PERMISSIONS FULL;
-DEFINE INDEX guitar_badges_guitar_idx ON guitar_badges FIELDS guitar_id;
--- Provenance
-DEFINE TABLE guitar_provenance TYPE NORMAL SCHEMAFULL PERMISSIONS FULL;
-DEFINE FIELD guitar_id  ON guitar_provenance TYPE record<guitars> PERMISSIONS FULL;
-DEFINE FIELD note       ON guitar_provenance TYPE option<string> PERMISSIONS FULL;
-DEFINE FIELD url        ON guitar_provenance TYPE option<string> PERMISSIONS FULL;
-DEFINE INDEX guitar_provenance_guitar_idx ON guitar_provenance FIELDS guitar_id;
+CREATE guitar_woods CONTENT { guitar_id: $g.id, body: "Old Growth Honduran Mahogany centerblock/back/sides with Spruce bracing", top: "Solid 3/16\\" Book-matched Maple", neck: "Quartersawn Honduran Mahogany", fingerboard: "Bound Ebony" };
+CREATE guitar_finish CONTENT { guitar_id: $g.id, type: "Nitrocellulose Lacquer", color: "Iced Tea Sunburst" };
+CREATE guitar_hardware CONTENT { guitar_id: $g.id, bridge: "Faber ABR with XL 6-32 studs", tailpiece: "Bigsby B6 with Towner Down Tension Bar", tuners: "Kluson Revolution 20:1" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "Throbak KZ115 low-output early PAF" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Throbak KZ115 low-output early PAF" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "Switchcraft" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Output Jack", detail: "Puretone" };
+CREATE guitar_setup CONTENT { guitar_id: $g.id, strings: "Stringjoy 10-48 Nickel Wound", tuning: "Standard", action: "4/64", nut_material: "Unbleached Polished Bone", truss_rod: "Sealed 2-Way Adjustable" };
+CREATE guitar_case CONTENT { guitar_id: $g.id, type: "TKL Hardcase", coa_included: true };
+-- Dirty Bird
+LET $row = (SELECT id FROM guitars WHERE brand = "Banker" AND model = "Dirty Bird");
+IF $row = [] THEN {  LET $g = (CREATE guitars CONTENT { brand: "Banker", model: "Dirty Bird", slug: "banker-dirty-bird", body_style: "Bass, Neck-thru", line: "Bass & Baritone", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "" } RETURN AFTER);} ELSE {  LET $g = (UPDATE $row[0].id MERGE { slug: "banker-dirty-bird", body_style: "Bass, Neck-thru", line: "Bass & Baritone" } RETURN AFTER);} END;
+CREATE guitar_dimensions CONTENT { guitar_id: $g.id, scale_length: "34\\"", nut_width: "1 1/12\\"", neck_profile: "C", neck_thickness_1st: ".91", neck_thickness_12th: ".95", fingerboard_radius: "12\\"", fret_type: "Jescar 45085 Nickel Silver", inlays: "Pearloid Dot" };
+CREATE guitar_woods CONTENT { guitar_id: $g.id, body: "Multi-Ply Honduran Mahogany Neck-Thru with Mahogany Wings", neck: "Multi-Ply Mahogany (Neck-thru)", fingerboard: "Rosewood" };
+CREATE guitar_finish CONTENT { guitar_id: $g.id, type: "Nitrocellulose Lacquer", color: "Vintage Fireburst" };
+CREATE guitar_hardware CONTENT { guitar_id: $g.id, bridge: "High Mass ABR Style", tailpiece: "Stoptail | Nickel", tuners: "Grover 144C4 | Nickel" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "Thunderbird (Nickel Covers)" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Thunderbird (Nickel Covers)" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Output Jack", detail: "Puretone" };
+CREATE guitar_setup CONTENT { guitar_id: $g.id, strings: "Stringjoy 45-105 Roundwound Bass", tuning: "Standard", action: "5/64", nut_material: "Unbleached Polished Bone", truss_rod: "2-Way Adjustable" };
+-- Simple Banker guitars import (no conditionals)
+-- Based on banker_guitars.json
+-- Leslie
+-- Simple Banker guitars import (no conditionals)
+-- Based on banker_guitars.json
+-- Leslie
+CREATE guitars:banker_leslie CONTENT {  brand: "Banker",  model: "Leslie",  slug: "leslie",  line: "Solidbody Electric",  body_style: "Slab Single/Double Cut"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_leslie,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_leslie,  scale_length: "24 3/4",  nut_width: "1 11/16",  neck_profile: "'59 \\"D\\" Shape",  neck_thickness_1st: ".92",  neck_thickness_12th: ".95",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_leslie,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_leslie,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_leslie,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_leslie,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_leslie,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Standard
+CREATE guitars:banker_ironman_ct CONTENT {  brand: "Banker",  model: "Ironman CT Standard",  slug: "ironman-ct-standard",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Deluxe
+CREATE guitars:banker_ironman_ct_deluxe CONTENT {  brand: "Banker",  model: "Ironman CT Deluxe",  slug: "ironman-ct-deluxe",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_deluxe,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Custom
+CREATE guitars:banker_ironman_ct_custom CONTENT {  brand: "Banker",  model: "Ironman CT Custom",  slug: "ironman-ct-custom",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_custom,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Custom Shop
+CREATE guitars:banker_ironman_ct_custom_shop CONTENT {  brand: "Banker",  model: "Ironman CT Custom Shop",  slug: "ironman-ct-custom-shop",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Custom Shop Deluxe
+CREATE guitars:banker_ironman_ct_custom_shop_deluxe CONTENT {  brand: "Banker",  model: "Ironman CT Custom Shop Deluxe",  slug: "ironman-ct-custom-shop-deluxe",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+-- Ironman CT Custom Shop Deluxe with Case
+CREATE guitars:banker_ironman_ct_custom_shop_deluxe_case CONTENT {  brand: "Banker",  model: "Ironman CT Custom Shop Deluxe with Case",  slug: "ironman-ct-custom-shop-deluxe-case",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+CREATE guitar_case CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case,  type: "Hard Case",  included: true};
+-- Ironman CT Custom Shop Deluxe with Case and Gig Bag
+CREATE guitars:banker_ironman_ct_custom_shop_deluxe_case_gig CONTENT {  brand: "Banker",  model: "Ironman CT Custom Shop Deluxe with Case and Gig Bag",  slug: "ironman-ct-custom-shop-deluxe-case-gig",  line: "Solidbody Electric",  body_style: "Bound Double Cutaway"};
+CREATE guitar_woods CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  body: "Honduran Mahogany or Korina",  neck: "Quartersawn Honduran Mahogany or Korina",  fingerboard: "Rosewood"};
+CREATE guitar_dimensions CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  scale_length: "24 3/4",  nut_width: "1 5/8",  neck_profile: "60 C Shape",  neck_thickness_1st: ".91",  neck_thickness_12th: ".93",  fingerboard_radius: "12",  fret_count: 22,  fret_type: "Jescar 45085 Nickel Silver"};
+CREATE guitar_hardware CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  bridge: "Faber Vintage Wraparound Bridge",  tuning_machines: "Kluson Deluxe White Oval Button",  nut: "Unbleached Polished Bone"};
+CREATE guitar_pickups CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  bridge: "Single Dogear P90",  neck: "",  middle: ""};
+CREATE guitar_controls CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  volume: "CTS 550k Potentiometer",  tone: "CTS 550k Potentiometer",  switch: "",  other: ""};
+CREATE guitar_finish CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  body: "Nitrocellulose Lacquer",  neck: "Nitrocellulose Lacquer",  aging: "Optional Aging"};
+CREATE guitar_setup CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  strings: "Stringjoy 10-46 Pure Nickel",  tuning: "Standard Tuning",  action: "4/64"};
+CREATE guitar_case CONTENT {  guitar_id: guitars:banker_ironman_ct_custom_shop_deluxe_case_gig,  type: "Hard Case and Gig Bag",  included: true};
+SELECT brand, model, slug FROM guitars WHERE brand = 'Banker' LIMIT 10;

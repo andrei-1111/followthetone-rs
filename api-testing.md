@@ -1,5 +1,41 @@
 # API Testing with cURL
 
+## Seed Banker guitars into SurrealDB
+
+1) Export env for your Surreal instance:
+
+```bash
+export SURREAL_URL="https://localhost:8000"
+export SURREAL_NS="app"
+export SURREAL_DB="app"
+export SURREAL_USER="root"
+export SURREAL_PASS="root"
+```
+
+2) Run the seed:
+
+```bash
+# Load environment variables
+set -a; source .env; set +a
+
+# Run the import script
+surreal sql --conn "https://$SURREAL_URL" --user "$SURREAL_USER" --pass "$SURREAL_PASS" \
+  --ns "$SURREAL_NS" --db "$SURREAL_DB" \
+  < data/banker_simple_import.surql
+```
+
+**Status**: ✅ Successfully imported 7 Banker guitar models with complete specifications including:
+- Leslie
+- Ironman CT Standard
+- Ironman CT Deluxe
+- Ironman CT Custom
+- Ironman CT Custom Shop
+- Ironman CT Custom Shop Deluxe
+- Ironman CT Custom Shop Deluxe with Case
+- Ironman CT Custom Shop Deluxe with Case and Gig Bag
+
+All data is now accessible via the API at `http://localhost:8080/api/guitars`.
+
 This document provides cURL commands to test all endpoints of the FollowTheTone REST API.
 
 ## Prerequisites
