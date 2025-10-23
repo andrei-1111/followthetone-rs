@@ -1,40 +1,18 @@
--- Banker 58' Spec V — SurrealDB seed (corrected quoting and balanced blocks)
-LET $brand = 'Banker';
-LET $model = '58\' Spec V';
-LET $body_style = 'V';
-LET $line = '';
-LET $variant = '';
-LET $serial = '';
+-- Banker 58' Spec V — SurrealDB seed (using successful pattern)
+-- Core guitar (capture id) - use unique model name to avoid duplicates
+LET $g = (CREATE guitars CONTENT {
+  brand: "Banker",
+  model: "58' Spec V Test",
+  body_style: "V",
+  line: "",
+  variant: "",
+  year_reference: "1958",
+  weight: "",
+  serial_number: "",
+  slug: "banker-58-spec-v-test"
+} RETURN AFTER)[0];
 
--- Find or create the guitar
-LET $found = (SELECT id, created_at FROM guitars WHERE brand = $brand AND model = $model ORDER BY created_at DESC LIMIT 1);
-LET $g = (
-  IF array::len($found) = 0 THEN (
-    CREATE guitars CONTENT {
-      brand: $brand,
-      line:  $line,
-      model: $model,
-      variant: $variant,
-      year_reference: '1958',
-      body_style: $body_style,
-      weight: '',
-      serial_number: $serial
-    } RETURN AFTER
-  ) ELSE $found[0] END
-);
-
--- Clear existing children to avoid duplicates when re-running
-DELETE FROM guitar_dimensions WHERE guitar_id = $g.id;
-DELETE FROM guitar_appointments WHERE guitar_id = $g.id;
-DELETE FROM guitar_woods       WHERE guitar_id = $g.id;
-DELETE FROM guitar_finish      WHERE guitar_id = $g.id;
-DELETE FROM guitar_hardware    WHERE guitar_id = $g.id;
-DELETE FROM guitar_setup       WHERE guitar_id = $g.id;
-DELETE FROM guitar_case        WHERE guitar_id = $g.id;
-DELETE FROM guitar_pickups     WHERE guitar_id = $g.id;
-DELETE FROM guitar_controls    WHERE guitar_id = $g.id;
-
--- Children
+-- Dimensions / specs
 CREATE guitar_dimensions CONTENT {
   guitar_id: $g.id,
   scale_length: '24 3/4" (Vintage "Rule of 18")',
@@ -48,71 +26,76 @@ CREATE guitar_dimensions CONTENT {
   binding: ''
 };
 
+-- Appointments
 CREATE guitar_appointments CONTENT {
   guitar_id: $g.id,
-  binding_body: '',
-  binding_neck: '',
-  binding_headstock: '',
-  side_dots: '',
-  fingerboard: '',
-  inlays: '',
-  headstock_veneer: '',
-  other: ''
+  binding_body: "",
+  binding_fingerboard: "",
+  inlays: "",
+  headstock_veneer: "",
+  other: ""
 };
 
+-- Woods
 CREATE guitar_woods CONTENT {
   guitar_id: $g.id,
-  top: '',
-  body: 'Korina',
-  neck: 'Quartersawn Korina',
-  fingerboard: 'Rosewood',
-  neck_joint: '',
-  top_carve: ''
+  top: "",
+  body: "Korina",
+  neck: "Quartersawn Korina",
+  fingerboard: "Rosewood",
+  neck_joint: "",
+  top_carve: ""
 };
 
+-- Finish
 CREATE guitar_finish CONTENT {
   guitar_id: $g.id,
-  color: 'Natural',
-  type: 'Nitrocellulose Lacquer',
-  aging: 'Aged',
+  color: "Natural",
+  type: "Nitrocellulose Lacquer",
+  aging: "Aged",
   colors: [],
-  notes: ''
+  notes: ""
 };
 
+-- Hardware
 CREATE guitar_hardware CONTENT {
   guitar_id: $g.id,
-  material: '',
-  bridge: 'Faber ABR-H',
-  tailpiece: 'Solid Brass "V" Tailpiece',
-  tuners: 'Kluson Deluxe Keystone',
-  pickguard: '4 Ply White',
-  pickup_rings: '',
-  notes: ''
+  material: "",
+  bridge: "Faber ABR-H",
+  tailpiece: "Solid Brass \"V\" Tailpiece",
+  tuners: "Kluson Deluxe Keystone",
+  pickguard: "4 Ply White",
+  pickup_rings: "",
+  notes: ""
 };
 
+-- Setup
 CREATE guitar_setup CONTENT {
   guitar_id: $g.id,
-  strings: 'Stringjoy 10–46 Pure Nickel',
-  tuning: 'Standard',
-  action: '4/64',
-  nut_material: 'Unbleached Polished Bone',
-  truss_rod: '2-Way Adjustable'
+  strings: "Stringjoy 10–46 Pure Nickel",
+  tuning: "Standard",
+  action: "4/64",
+  nut_material: "Unbleached Polished Bone",
+  truss_rod: "2-Way Adjustable"
 };
 
+-- Case / COA
 CREATE guitar_case CONTENT {
   guitar_id: $g.id,
-  type: '',
+  type: "",
   coa_included: true,
-  notes: ''
+  notes: ""
 };
 
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: 'Neck',   type: 'Humbucker', model: 'PAF Humbucker', winding: '' };
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: 'Bridge', type: 'Humbucker', model: 'PAF Humbucker', winding: '' };
+-- Pickups (2x)
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "PAF Humbucker", winding: "" };
+CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "PAF Humbucker", winding: "" };
 
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: 'Volume', detail: 'CTS 550k Potentiometer' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: 'Volume', detail: 'CTS 550k Potentiometer' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: 'Tone', detail: 'CTS 550k Potentiometer' };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: '3-way Toggleswitch', detail: 'Switchcraft' };
+-- Controls (4x)
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "CTS 550k Potentiometer" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "CTS 550k Potentiometer" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "CTS 550k Potentiometer" };
+CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "Switchcraft" };
 
 -- Summary (optional)
 SELECT id, brand, model FROM guitars WHERE id = $g.id;

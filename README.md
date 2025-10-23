@@ -21,11 +21,11 @@ Create/update `.env` file:
 
 ```bash
 # SurrealDB Configuration
-SURREAL_URL=https://followthetone-surreal.fly.dev
-SURREAL_NS=gear
-SURREAL_DB=guitars
-SURREAL_USER=root
-SURREAL_PASS=Password0978
+SURREAL_URL=
+SURREAL_NS=
+SURREAL_DB=
+SURREAL_USER=
+SURREAL_PASS=
 
 # Server Configuration
 HOST=127.0.0.1

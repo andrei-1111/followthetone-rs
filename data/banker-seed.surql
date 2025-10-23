@@ -1,5 +1,5 @@
--- Core guitar (capture id)
-LET $g = (CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard", body_style: "Bound Double Cutaway", line: "", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "" } RETURN AFTER);
+-- Core guitar (capture id) - use unique model name to avoid duplicates
+LET $g = (CREATE guitars CONTENT { brand: "Banker", model: "Ironman CT Standard Test", body_style: "Bound Double Cutaway", line: "", variant: "", year_reference: "", weight: "", price_cents: 0, price_currency: "USD", serial_number: "", slug: "banker-ironman-ct-standard-test" } RETURN AFTER)[0];
 
 -- Dimensions / specs
 CREATE guitar_dimensions CONTENT { guitar_id: $g.id, scale_length: "24 3/4", nut_width: "1 5/8", neck_profile: "60 C Shape", neck_thickness_1st: ".91", neck_thickness_12th: ".93", fingerboard_radius: "12", fret_count: 22, fret_type: "Jescar 45085 Nickel Silver", binding: "Bound" };
