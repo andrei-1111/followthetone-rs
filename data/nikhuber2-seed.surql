@@ -2,14 +2,18 @@
 -- Core guitar (capture id) - use unique model name to avoid duplicates
 LET $g = (CREATE guitars CONTENT {
   brand: "Nik Huber",
-  model: "Krautster III Import",
-  body_style: "",
+  model: "Krautster III",
+  body_style: "Stratocaster Style",
   line: "",
   variant: "Copper Top",
   year_reference: "",
   weight: "6 lbs 14 oz",
+  price_cents: 0,
+  price_currency: "USD",
   serial_number: "44749",
-  slug: "nik-huber-krautster-iii-import"
+  slug: "nik-huber-krautster-iii-guitar",
+  production_year: 0,
+  spec_version_year: 0
 } RETURN AFTER)[0];
 
 -- Dimensions / specs

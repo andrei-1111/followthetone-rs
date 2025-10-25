@@ -2,14 +2,18 @@
 -- Core guitar (capture id) - use unique model name to avoid duplicates
 LET $g = (CREATE guitars CONTENT {
   brand: "Nik Huber",
-  model: "Orca 59 Import",
-  body_style: "",
+  model: "Orca 59",
+  body_style: "Les Paul Style",
   line: "",
   variant: "Brazilian Ice Tea Burst (55086)",
   year_reference: "",
   weight: "",
+  price_cents: 0,
+  price_currency: "USD",
   serial_number: "55086",
-  slug: "nik-huber-orca-59-import"
+  slug: "nik-huber-orca-59-guitar",
+  production_year: 0,
+  spec_version_year: 0
 } RETURN AFTER)[0];
 
 -- Dimensions / specs

@@ -4,13 +4,13 @@
 -- Core guitar (capture id) - use unique model name to avoid duplicates
 LET $g = (CREATE guitars CONTENT {
   brand: "Fender Custom Shop",
-  model: "61 Strat Wildwood 10 Test",
+  model: "61 Strat Wildwood 10",
   body_style: "Stratocaster",
   line: "Dealer Select Wildwood 10",
   variant: "Red Sparkle Over 3-Tone Sunburst",
   year_reference: "1961",
   weight: "7.30 lbs.",
-  slug: "fender-custom-shop-61-strat-wildwood10-test"
+  slug: "fender-custom-shop-61-strat-wildwood10"
 } RETURN AFTER)[0];
 
 -- Dimensions / specs

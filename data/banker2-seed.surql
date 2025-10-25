@@ -2,14 +2,14 @@
 -- Core guitar (capture id) - use unique model name to avoid duplicates
 LET $g = (CREATE guitars CONTENT {
   brand: "Banker",
-  model: "58' Spec V Test",
+  model: "58' Spec V",
   body_style: "V",
   line: "",
   variant: "",
   year_reference: "1958",
   weight: "",
   serial_number: "",
-  slug: "banker-58-spec-v-test"
+  slug: "banker-58-spec-v"
 } RETURN AFTER)[0];
 
 -- Dimensions / specs

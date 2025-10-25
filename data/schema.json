@@ -1,0 +1,765 @@
+{
+  "database": {
+    "name": "followthetone-db",
+    "namespace": "followthetone-ns",
+    "description": "Guitar database schema for FollowTheTone application"
+  },
+  "tables": {
+    "guitars": {
+      "description": "Main guitar records",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Unique guitar identifier"
+        },
+        "brand": {
+          "type": "string",
+          "required": true,
+          "description": "Guitar brand (e.g., Gibson, Fender, Martin)"
+        },
+        "model": {
+          "type": "string",
+          "required": true,
+          "description": "Guitar model name"
+        },
+        "slug": {
+          "type": "string",
+          "required": true,
+          "description": "URL-friendly identifier"
+        },
+        "body_style": {
+          "type": "string",
+          "required": false,
+          "description": "Guitar body style (e.g., Dreadnought, Stratocaster)"
+        },
+        "line": {
+          "type": "string",
+          "required": false,
+          "description": "Guitar line or series"
+        },
+        "variant": {
+          "type": "string",
+          "required": false,
+          "description": "Guitar variant or special edition"
+        },
+        "year_reference": {
+          "type": "string",
+          "required": false,
+          "description": "Reference year (e.g., 1959, 1960)"
+        },
+        "weight": {
+          "type": "string",
+          "required": false,
+          "description": "Guitar weight"
+        },
+        "serial_number": {
+          "type": "string",
+          "required": false,
+          "description": "Manufacturer serial number"
+        },
+        "auction": {
+          "type": "boolean",
+          "required": false,
+          "description": "Whether guitar is from auction"
+        },
+        "categories": {
+          "type": "array<string>",
+          "required": false,
+          "description": "Guitar categories"
+        },
+        "condition_display": {
+          "type": "string",
+          "required": false,
+          "description": "Human-readable condition"
+        },
+        "condition_slug": {
+          "type": "string",
+          "required": false,
+          "description": "URL-friendly condition identifier"
+        },
+        "created_at": {
+          "type": "datetime",
+          "required": true,
+          "description": "Record creation timestamp",
+          "default": "time::now()"
+        },
+        "updated_at": {
+          "type": "datetime",
+          "required": true,
+          "description": "Record update timestamp",
+          "default": "time::now()"
+        },
+        "created_at_market": {
+          "type": "datetime",
+          "required": false,
+          "description": "Market listing creation date"
+        },
+        "published_at": {
+          "type": "datetime",
+          "required": false,
+          "description": "Publication date"
+        },
+        "description_html": {
+          "type": "string",
+          "required": false,
+          "description": "HTML description"
+        },
+        "display_title": {
+          "type": "string",
+          "required": false,
+          "description": "Display title"
+        },
+        "external_id": {
+          "type": "string",
+          "required": false,
+          "description": "External system ID"
+        },
+        "external_source": {
+          "type": "string",
+          "required": false,
+          "description": "External system source"
+        },
+        "finish_display": {
+          "type": "string",
+          "required": false,
+          "description": "Display finish information"
+        },
+        "has_inventory": {
+          "type": "boolean",
+          "required": false,
+          "description": "Whether guitar has inventory"
+        },
+        "hero_url": {
+          "type": "string",
+          "required": false,
+          "description": "Main image URL"
+        },
+        "inventory": {
+          "type": "number",
+          "required": false,
+          "description": "Inventory count"
+        },
+        "listing_currency": {
+          "type": "string",
+          "required": false,
+          "description": "Listing currency (e.g., USD, EUR)"
+        },
+        "listing_url": {
+          "type": "string",
+          "required": false,
+          "description": "External listing URL"
+        },
+        "offers_enabled": {
+          "type": "boolean",
+          "required": false,
+          "description": "Whether offers are enabled"
+        },
+        "shop_id": {
+          "type": "number",
+          "required": false,
+          "description": "Shop identifier"
+        },
+        "shop_name": {
+          "type": "string",
+          "required": false,
+          "description": "Shop name"
+        },
+        "shop_slug": {
+          "type": "string",
+          "required": false,
+          "description": "URL-friendly shop identifier"
+        }
+      },
+      "indexes": {
+        "guitars_ext_unique": {
+          "fields": ["external_source", "external_id"],
+          "unique": true,
+          "description": "Unique external source and ID combination"
+        },
+        "idx_guitars_brand_model": {
+          "fields": ["brand", "model"],
+          "unique": true,
+          "description": "Unique brand and model combination"
+        },
+        "slug_idx": {
+          "fields": ["slug"],
+          "unique": true,
+          "description": "Unique slug identifier"
+        }
+      }
+    },
+    "guitar_dimensions": {
+      "description": "Guitar physical dimensions and specifications",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_dimensions>",
+          "required": true,
+          "description": "Unique dimensions record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "scale_length": {
+          "type": "string",
+          "required": false,
+          "description": "Scale length (e.g., 25.5\", 24.75\")"
+        },
+        "nut_width": {
+          "type": "string",
+          "required": false,
+          "description": "Nut width (e.g., 1.650\", 1 5/8\")"
+        },
+        "neck_profile": {
+          "type": "string",
+          "required": false,
+          "description": "Neck profile (e.g., C Shape, D Shape)"
+        },
+        "neck_thickness_1st": {
+          "type": "string",
+          "required": false,
+          "description": "Neck thickness at 1st fret"
+        },
+        "neck_thickness_12th": {
+          "type": "string",
+          "required": false,
+          "description": "Neck thickness at 12th fret"
+        },
+        "fingerboard_radius": {
+          "type": "string",
+          "required": false,
+          "description": "Fingerboard radius (e.g., 12\", Compound 10\"–14\")"
+        },
+        "fret_count": {
+          "type": "number",
+          "required": false,
+          "description": "Number of frets"
+        },
+        "fret_type": {
+          "type": "string",
+          "required": false,
+          "description": "Fret type and material"
+        },
+        "binding": {
+          "type": "string",
+          "required": false,
+          "description": "Binding information"
+        }
+      },
+      "indexes": {
+        "uniq_dimensions_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One dimensions record per guitar"
+        }
+      }
+    },
+    "guitar_woods": {
+      "description": "Guitar wood specifications",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_woods>",
+          "required": true,
+          "description": "Unique woods record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "top": {
+          "type": "string",
+          "required": false,
+          "description": "Top wood (e.g., Sitka Spruce, Maple)"
+        },
+        "body": {
+          "type": "string",
+          "required": false,
+          "description": "Body wood (e.g., Mahogany, Alder)"
+        },
+        "neck": {
+          "type": "string",
+          "required": false,
+          "description": "Neck wood (e.g., Maple, Mahogany)"
+        },
+        "fingerboard": {
+          "type": "string",
+          "required": false,
+          "description": "Fingerboard wood (e.g., Rosewood, Ebony)"
+        },
+        "neck_joint": {
+          "type": "string",
+          "required": false,
+          "description": "Neck joint type"
+        },
+        "top_carve": {
+          "type": "string",
+          "required": false,
+          "description": "Top carve information"
+        }
+      },
+      "indexes": {
+        "uniq_woods_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One woods record per guitar"
+        }
+      }
+    },
+    "guitar_finish": {
+      "description": "Guitar finish and color information",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_finish>",
+          "required": true,
+          "description": "Unique finish record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "color": {
+          "type": "string",
+          "required": false,
+          "description": "Primary color (e.g., Sunburst, Natural)"
+        },
+        "type": {
+          "type": "string",
+          "required": false,
+          "description": "Finish type (e.g., Nitrocellulose Lacquer, Polyurethane)"
+        },
+        "aging": {
+          "type": "string",
+          "required": false,
+          "description": "Aging treatment (e.g., Relic, VOS, None)"
+        },
+        "colors": {
+          "type": "array<string>",
+          "required": false,
+          "description": "Array of color variations"
+        },
+        "notes": {
+          "type": "string",
+          "required": false,
+          "description": "Additional finish notes"
+        }
+      },
+      "indexes": {
+        "uniq_finish_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One finish record per guitar"
+        }
+      }
+    },
+    "guitar_hardware": {
+      "description": "Guitar hardware specifications",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_hardware>",
+          "required": true,
+          "description": "Unique hardware record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "material": {
+          "type": "string",
+          "required": false,
+          "description": "Hardware material (e.g., Nickel, Chrome, Gold)"
+        },
+        "bridge": {
+          "type": "string",
+          "required": false,
+          "description": "Bridge type and model"
+        },
+        "tailpiece": {
+          "type": "string",
+          "required": false,
+          "description": "Tailpiece type and model"
+        },
+        "tuners": {
+          "type": "string",
+          "required": false,
+          "description": "Tuning machines"
+        },
+        "pickguard": {
+          "type": "string",
+          "required": false,
+          "description": "Pickguard information"
+        },
+        "pickup_rings": {
+          "type": "string",
+          "required": false,
+          "description": "Pickup mounting rings"
+        },
+        "notes": {
+          "type": "string",
+          "required": false,
+          "description": "Additional hardware notes"
+        }
+      },
+      "indexes": {
+        "uniq_hardware_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One hardware record per guitar"
+        }
+      }
+    },
+    "guitar_pickups": {
+      "description": "Guitar pickup specifications (multiple per guitar)",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_pickups>",
+          "required": true,
+          "description": "Unique pickup record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "position": {
+          "type": "string",
+          "required": false,
+          "description": "Pickup position (e.g., Neck, Middle, Bridge)"
+        },
+        "type": {
+          "type": "string",
+          "required": false,
+          "description": "Pickup type (e.g., Humbucker, Single-Coil, P90)"
+        },
+        "model": {
+          "type": "string",
+          "required": false,
+          "description": "Pickup model name"
+        },
+        "winding": {
+          "type": "string",
+          "required": false,
+          "description": "Winding specifications"
+        }
+      },
+      "indexes": {
+        "idx_pickups_guitar": {
+          "fields": ["guitar_id"],
+          "unique": false,
+          "description": "Index for guitar pickup lookups"
+        }
+      }
+    },
+    "guitar_controls": {
+      "description": "Guitar control specifications (multiple per guitar)",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_controls>",
+          "required": true,
+          "description": "Unique control record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "Control name (e.g., Volume, Tone, Switch)"
+        },
+        "detail": {
+          "type": "string",
+          "required": false,
+          "description": "Control details and specifications"
+        }
+      },
+      "indexes": {
+        "idx_controls_guitar": {
+          "fields": ["guitar_id"],
+          "unique": false,
+          "description": "Index for guitar control lookups"
+        }
+      }
+    },
+    "guitar_setup": {
+      "description": "Guitar setup specifications",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_setup>",
+          "required": true,
+          "description": "Unique setup record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "strings": {
+          "type": "string",
+          "required": false,
+          "description": "String gauge and type"
+        },
+        "tuning": {
+          "type": "string",
+          "required": false,
+          "description": "Tuning (e.g., Standard, Drop D)"
+        },
+        "action": {
+          "type": "string",
+          "required": false,
+          "description": "String action height"
+        },
+        "nut_material": {
+          "type": "string",
+          "required": false,
+          "description": "Nut material (e.g., Bone, Plastic)"
+        },
+        "truss_rod": {
+          "type": "string",
+          "required": false,
+          "description": "Truss rod type and adjustment"
+        }
+      },
+      "indexes": {
+        "uniq_setup_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One setup record per guitar"
+        }
+      }
+    },
+    "guitar_appointments": {
+      "description": "Guitar appointments and decorative elements",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_appointments>",
+          "required": true,
+          "description": "Unique appointments record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "binding_body": {
+          "type": "string",
+          "required": false,
+          "description": "Body binding information"
+        },
+        "binding_fingerboard": {
+          "type": "string",
+          "required": false,
+          "description": "Fingerboard binding information"
+        },
+        "inlays": {
+          "type": "string",
+          "required": false,
+          "description": "Fingerboard inlays (e.g., Dots, Blocks, Crown)"
+        },
+        "headstock_veneer": {
+          "type": "string",
+          "required": false,
+          "description": "Headstock veneer information"
+        },
+        "other": {
+          "type": "string",
+          "required": false,
+          "description": "Other appointment details"
+        }
+      },
+      "indexes": {
+        "uniq_appointments_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One appointments record per guitar"
+        }
+      }
+    },
+    "guitar_case": {
+      "description": "Guitar case and COA information",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_case>",
+          "required": true,
+          "description": "Unique case record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "type": {
+          "type": "string",
+          "required": false,
+          "description": "Case type (e.g., Hard Case, Gig Bag)"
+        },
+        "coa_included": {
+          "type": "boolean",
+          "required": false,
+          "description": "Whether Certificate of Authenticity is included"
+        },
+        "notes": {
+          "type": "string",
+          "required": false,
+          "description": "Additional case notes"
+        }
+      },
+      "indexes": {
+        "uniq_case_guitar": {
+          "fields": ["guitar_id"],
+          "unique": true,
+          "description": "One case record per guitar"
+        }
+      }
+    },
+    "guitar_badges": {
+      "description": "Guitar badges and special markings",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_badges>",
+          "required": true,
+          "description": "Unique badge record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "badge": {
+          "type": "string",
+          "required": true,
+          "description": "Badge name or description"
+        }
+      },
+      "indexes": {
+        "guitar_badges_guitar_idx": {
+          "fields": ["guitar_id"],
+          "unique": false,
+          "description": "Index for guitar badge lookups"
+        }
+      }
+    },
+    "guitar_provenance": {
+      "description": "Guitar provenance and history",
+      "type": "NORMAL",
+      "schema": "SCHEMAFULL",
+      "fields": {
+        "id": {
+          "type": "record<guitar_provenance>",
+          "required": true,
+          "description": "Unique provenance record identifier"
+        },
+        "guitar_id": {
+          "type": "record<guitars>",
+          "required": true,
+          "description": "Reference to guitar record"
+        },
+        "note": {
+          "type": "string",
+          "required": false,
+          "description": "Provenance notes"
+        },
+        "url": {
+          "type": "string",
+          "required": false,
+          "description": "Related URL or documentation"
+        }
+      },
+      "indexes": {
+        "guitar_provenance_guitar_idx": {
+          "fields": ["guitar_id"],
+          "unique": false,
+          "description": "Index for guitar provenance lookups"
+        }
+      }
+    }
+  },
+  "relationships": {
+    "guitars": {
+      "one_to_one": [
+        "guitar_dimensions",
+        "guitar_woods",
+        "guitar_finish",
+        "guitar_hardware",
+        "guitar_setup",
+        "guitar_appointments",
+        "guitar_case"
+      ],
+      "one_to_many": [
+        "guitar_pickups",
+        "guitar_controls",
+        "guitar_badges",
+        "guitar_provenance"
+      ]
+    }
+  },
+  "frontend_notes": {
+    "display_priority": {
+      "high": [
+        "brand",
+        "model",
+        "slug",
+        "body_style",
+        "year_reference",
+        "weight"
+      ],
+      "medium": [
+        "line",
+        "variant",
+        "serial_number",
+        "color",
+        "top",
+        "body",
+        "neck",
+        "fingerboard"
+      ],
+      "low": [
+        "created_at",
+        "updated_at",
+        "external_id",
+        "external_source"
+      ]
+    },
+    "field_groups": {
+      "basic_info": ["brand", "model", "slug", "body_style", "line", "variant", "year_reference", "weight", "serial_number"],
+      "dimensions": ["scale_length", "nut_width", "neck_profile", "neck_thickness_1st", "neck_thickness_12th", "fingerboard_radius", "fret_count", "fret_type"],
+      "woods": ["top", "body", "neck", "fingerboard", "neck_joint", "top_carve"],
+      "finish": ["color", "type", "aging", "colors"],
+      "hardware": ["material", "bridge", "tailpiece", "tuners", "pickguard", "pickup_rings"],
+      "pickups": ["position", "type", "model", "winding"],
+      "controls": ["name", "detail"],
+      "setup": ["strings", "tuning", "action", "nut_material", "truss_rod"],
+      "appointments": ["binding_body", "binding_fingerboard", "inlays", "headstock_veneer", "other"],
+      "case": ["type", "coa_included", "notes"],
+      "badges": ["badge"],
+      "provenance": ["note", "url"]
+    }
+  }
+}
