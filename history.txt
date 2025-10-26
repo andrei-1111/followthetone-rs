@@ -1,43 +1,93 @@
 #V2
-CREATE guitar_dimensions CONTENT {   guitar_id: $g.id,   scale_length: "25.5\\"",   nut_width: "1.650\\"",   neck_profile: "60 Oval C",   neck_thickness_1st: ".810",   neck_thickness_12th: ".940",   fingerboard_radius: "Wildwood Custom 10\\"",   fret_count: 21,   fret_type: "6105 Narrow-Tall",   binding: "" };
--- Woods
-CREATE guitar_woods CONTENT {   guitar_id: $g.id,   top: "",   body: "Alder",   neck: "Quartersawn Maple",   fingerboard: "AAA Indian Rosewood",   neck_joint: "",   top_carve: "" };
--- Finish
-CREATE guitar_finish CONTENT {   guitar_id: $g.id,   color: "Red Sparkle Over 3-Tone Sunburst",   type: "Nitrocellulose Lacquer",   aging: "Heavy Relic",   colors: [],   notes: "" };
--- Hardware
-CREATE guitar_hardware CONTENT {   guitar_id: $g.id,   material: "Nickel/Chrome",   bridge: "Vintage Tremolo",   tailpiece: "",   tuners: "Vintage-Style",   pickguard: "",   pickup_rings: "",   notes: "" };
--- Setup
-CREATE guitar_setup CONTENT {   guitar_id: $g.id,   strings: "",   tuning: "",   action: "",   nut_material: "Bone",   truss_rod: "" };
--- Case / COA
-CREATE guitar_case CONTENT {   guitar_id: $g.id,   type: "Limited Edition Hardshell Case with Embroidered Custom Shop Logo",   coa_included: true,   notes: "" };
--- Pickups (3x)
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Single-Coil", model: "Hand-Wound Wildwood 10 Strat", winding: "" };
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Middle", type: "Single-Coil", model: "Hand-Wound Wildwood 10 Strat", winding: "" };
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Single-Coil", model: "Hand-Wound Wildwood 10 Strat", winding: "" };
--- Controls (4x)
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "5-way Switch", detail: "" };
--- Provenance
-CREATE guitar_provenance CONTENT { guitar_id: $g.id, note: "Wildwood 10 Dealer Series", url: "" };
-INFO FOR DB;
+-- Update guitar that has "Carter Vintage" in its model name
+UPDATE guitars SET model = "50th Anniversary Korina Flying V" WHERE model = "50th Anniversary Korina Flying V Carter Vintage";
+-- Remove "Carter Vintage" from guitar slug in the database
+-- Update guitar that has "Carter Vintage" in its slug
+UPDATE guitars SET slug = "gibson-2008-flying-v-50th-anniversary" WHERE slug = "carter-vintage-gibson-2008-flying-v-50th-anniversary";
+-- Update model field to remove "Carter Vintage" from guitar model name
+-- This will clean up any remaining "Carter Vintage" references in the model field
+UPDATE guitars SET model = "50th Anniversary Korina Flying V" WHERE model CONTAINS "Carter Vintage";
+-- Remove "Carter Vintage" from the specific model name
+-- Update the exact model name that still contains "Carter Vintage"
+UPDATE guitars SET model = "50th Anniversary Korina Flying V" WHERE model = "50th Anniversary Korina Flying V Carter Vintage";
+-- Check what guitars are currently in the database
+SELECT id, brand, model, slug FROM guitars;
+-- Check the Carter Vintage guitar slug and related data
+SELECT id, brand, model, slug, shop_name, external_source, listing_url FROM guitars WHERE model = "50th Anniversary Korina Flying V";
+-- Update the Carter Vintage guitar slug to a more standard format
+-- This should fix the 404 error by using a slug that matches frontend expectations
+UPDATE guitars SET slug = "gibson-50th-anniversary-korina-flying-v" WHERE id = guitars:567uasi2gesmqa7s5he4;
+-- Drop the Carter Vintage guitar instance and all related records
+-- This will remove the guitar and all its related data
+DELETE FROM guitars WHERE id = guitars:567uasi2gesmqa7s5he4;
+-- Verify the Carter Vintage guitar has been removed
+-- Check if the guitar with the specific ID still exists
+SELECT id, brand, model, slug FROM guitars WHERE id = guitars:567uasi2gesmqa7s5he4;
+-- Check Nik Huber guitars in the database
+SELECT id, brand, model, slug FROM guitars WHERE brand = "Nik Huber";
+-- Update Nik Huber guitar slugs to more standard formats
+-- This should fix the 404 errors by using slugs that match frontend expectations
+UPDATE guitars SET slug = "nik-huber-orca-59-guitar" WHERE brand = "Nik Huber" AND model = "Orca 59";
+UPDATE guitars SET slug = "nik-huber-krautster-iii-guitar" WHERE brand = "Nik Huber" AND model = "Krautster III";
+-- Check if RetroFret guitar already exists
+SELECT id, brand, model, external_source, external_id FROM guitars WHERE external_source = "RetroFret Vintage Guitars";
+-- Migration: Update guitar indexes to allow same brand/model with different listing URLs
+-- This allows multiple guitars with same brand/model as long as they have different listing URLs
+-- Drop the existing unique index that prevents duplicate brand/model combinations
+-- Check existing indexes on guitars table
+INFO FOR TABLE guitars;
+-- Migration: Update guitar indexes to allow same brand/model with different listing URLs
+-- This allows multiple guitars with same brand/model as long as they have different listing URLs
+-- Create a new unique index that allows same brand/model but requires unique listing URLs
+DEFINE INDEX idx_guitars_brand_model_listing ON guitars COLUMNS brand, model, listing_url UNIQUE;
+-- Note: The old idx_guitars_brand_model index will be automatically replaced
+-- by the new index that includes listing_url in the uniqueness constraint
+-- Check existing indexes on guitars table
+INFO FOR TABLE guitars;
+-- Drop the old brand/model index that prevents duplicates
+REMOVE INDEX idx_guitars_brand_model ON guitars;
+-- Check the existing RetroFret guitar
+SELECT id, brand, model, listing_url, external_source, external_id FROM guitars WHERE external_source = "RetroFret Vintage Guitars";
+-- Update existing RetroFret guitar with complete data including image URLs
+-- Based on https://www.retrofret.com/product.asp?ProductID=11780&name=Gibson-Flying-V-Custom-1958-Solid-Body-Electric-Guitar-2022
+-- Update the main guitar record with complete data
+UPDATE guitars SET   model = "Flying V Custom 1958",  body_style = "Flying V",  line = "Custom Shop",  variant = "1958 Reissue",  year_reference = "1958",  serial_number = "8-2735",  slug = "gibson-flying-v-custom-1958-retrofret",  production_year = 2022,  spec_version_year = 1958,  condition = "Excellent +",  status = "Sold",  hero_image_url = "https://www.retrofret.com/images/gibson-flying-v-custom-1958-hero.jpg",  image_gallery = [    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-1.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-2.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-3.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-4.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-5.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-6.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-7.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-8.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-9.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-10.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-11.jpg",    "https://www.retrofret.com/images/gibson-flying-v-custom-1958-12.jpg"  ]
+-- Verify the RetroFret guitar has been updated with complete data
+SELECT id, brand, model, hero_image_url, image_gallery, condition, status, external_source, external_id FROM guitars WHERE external_source = "RetroFret Vintage Guitars";
+-- Check current guitar table schema
+INFO FOR TABLE guitars;
+-- Migration: Add image fields for scraped website URLs
+-- This adds fields to store hero image and image gallery URLs from scraped websites
+-- Add hero image URL field (rename existing hero_url to hero_image_url for consistency)
+DEFINE FIELD hero_image_url ON guitars TYPE option<string> PERMISSIONS FULL;
+-- Add image gallery array field
+DEFINE FIELD image_gallery ON guitars TYPE option<array<string>> PERMISSIONS FULL;
+DEFINE FIELD image_gallery[*] ON guitars TYPE string PERMISSIONS FULL;
+-- Add image source field to track where images came from
+DEFINE FIELD image_source ON guitars TYPE option<string> PERMISSIONS FULL;
+-- Add condition and status fields for dealer listings
+DEFINE FIELD condition ON guitars TYPE option<string> PERMISSIONS FULL;
+DEFINE FIELD status ON guitars TYPE option<string> PERMISSIONS FULL;
+-- Add production year fields for comparison features
+DEFINE FIELD production_year ON guitars TYPE option<number> PERMISSIONS FULL;
+DEFINE FIELD spec_version_year ON guitars TYPE option<number> PERMISSIONS FULL;
 -- Banker 58' Spec V — SurrealDB seed (using successful pattern)
 -- Core guitar (capture id) - use unique model name to avoid duplicates
-LET $g = (CREATE guitars CONTENT {   brand: "Banker",   model: "58' Spec V Test",   body_style: "V",   line: "",   variant: "",   year_reference: "1958",   weight: "",   serial_number: "",   slug: "banker-58-spec-v-test" } RETURN AFTER)[0];
+LET $g = (CREATE guitars CONTENT {  brand: "Banker",  model: "58' Spec V",  body_style: "V",  line: "",  variant: "",  year_reference: "1958",  weight: "",  price_cents: 469900,  price_currency: "USD",  serial_number: "",  slug: "banker-58-spec-v",  production_year: 0,  spec_version_year: 1958} RETURN AFTER)[0];
 -- Dimensions / specs
 CREATE guitar_dimensions CONTENT {  guitar_id: $g.id,  scale_length: '24 3/4" (Vintage "Rule of 18")',  nut_width: '1 11/16"',  neck_profile: "'58 D Shape",  neck_thickness_1st: '.94',  neck_thickness_12th: '.97',  fingerboard_radius: '12"',  fret_count: 22,  fret_type: 'Jescar 45085 Nickel Silver',  binding: ''};
 -- Appointments
-CREATE guitar_appointments CONTENT {   guitar_id: $g.id,   binding_body: "",   binding_fingerboard: "",   inlays: "",   headstock_veneer: "",   other: "" };
+CREATE guitar_appointments CONTENT {  guitar_id: $g.id,  binding_body: "",  binding_fingerboard: "",  inlays: "Celluloid Pearl Dot",  headstock_veneer: "",  other: "Vintage Correct Rubber Knee Rest + Recessed Rear Brass Ferrules"};
 -- Woods
-CREATE guitar_woods CONTENT {   guitar_id: $g.id,   top: "",   body: "Korina",   neck: "Quartersawn Korina",   fingerboard: "Rosewood",   neck_joint: "",   top_carve: "" };
+CREATE guitar_woods CONTENT {  guitar_id: $g.id,  top: "",  body: "Korina",  neck: "Quartersawn Korina",  fingerboard: "Rosewood",  neck_joint: "",  top_carve: ""};
 -- Finish
-CREATE guitar_finish CONTENT {   guitar_id: $g.id,   color: "Natural",   type: "Nitrocellulose Lacquer",   aging: "Aged",   colors: [],   notes: "" };
+CREATE guitar_finish CONTENT {  guitar_id: $g.id,  color: "Natural",  type: "Nitrocellulose Lacquer",  aging: "Aged",  colors: [],  notes: ""};
 -- Hardware
-CREATE guitar_hardware CONTENT {   guitar_id: $g.id,   material: "",   bridge: "Faber ABR-H",   tailpiece: "Solid Brass \\"V\\" Tailpiece",   tuners: "Kluson Deluxe Keystone",   pickguard: "4 Ply White",   pickup_rings: "",   notes: "" };
+CREATE guitar_hardware CONTENT {  guitar_id: $g.id,  material: "",  bridge: "Faber ABR-H",  tailpiece: "Solid Brass \\"V\\" Tailpiece",  tuners: "Kluson Deluxe Keystone",  pickguard: "4 Ply White",  pickup_rings: "M69 Mounting Rings",  notes: ""};
 -- Setup
-CREATE guitar_setup CONTENT {   guitar_id: $g.id,   strings: "Stringjoy 10–46 Pure Nickel",   tuning: "Standard",   action: "4/64",   nut_material: "Unbleached Polished Bone",   truss_rod: "2-Way Adjustable" };
+CREATE guitar_setup CONTENT {  guitar_id: $g.id,  strings: "Stringjoy 10–46 Pure Nickel",  tuning: "Standard",  action: "4/64",  nut_material: "Unbleached Polished Bone",  truss_rod: "2-Way Adjustable"};
 -- Case / COA
-CREATE guitar_case CONTENT {   guitar_id: $g.id,   type: "",   coa_included: true,   notes: "" };
+CREATE guitar_case CONTENT {  guitar_id: $g.id,  type: "",  coa_included: true,  notes: ""};
 -- Pickups (2x)
 CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "PAF Humbucker", winding: "" };
 CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "PAF Humbucker", winding: "" };
@@ -49,53 +99,3 @@ CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", d
 SELECT id, brand, model FROM guitars WHERE id = $g.id;
 SELECT count() AS pickup_count FROM guitar_pickups WHERE guitar_id = $g.id;
 SELECT count() AS control_count FROM guitar_controls WHERE guitar_id = $g.id;
--- Nik Huber Orca 59 — SurrealDB seed (using successful pattern)
--- Core guitar (capture id) - use unique model name to avoid duplicates
-LET $g = (CREATE guitars CONTENT {   brand: "Nik Huber",   model: "Orca 59 Test",   body_style: "",   line: "",   variant: "Brazilian Ice Tea Burst (55086)",   year_reference: "",   weight: "",   serial_number: "55086",   slug: "nik-huber-orca-59-test" } RETURN AFTER)[0];
--- Dimensions / specs
-CREATE guitar_dimensions CONTENT {   guitar_id: $g.id,   scale_length: "24.75\\"",   nut_width: "1.67\\" (42.5 mm)",   neck_profile: "Orca Standard",   neck_thickness_1st: "",   neck_thickness_12th: "",   fingerboard_radius: "Compound 10\\"–14\\"",   fret_count: 22,   fret_type: "Medium Jumbo (extra hard)",   binding: "" };
--- Appointments
-CREATE guitar_appointments CONTENT {   guitar_id: $g.id,   binding_body: "",   binding_fingerboard: "",   inlays: "Crown MOP",   headstock_veneer: "Ebony veneer",   other: "Body shape: Orca 59 (Fat Back)" };
--- Woods
-CREATE guitar_woods CONTENT {   guitar_id: $g.id,   top: "Exceptional 5A Curly Maple (upgrade)",   body: "Mahogany",   neck: "Mahogany",   fingerboard: "Super Dark Brazilian Rosewood (upgrade)",   neck_joint: "",   top_carve: "" };
--- Finish
-CREATE guitar_finish CONTENT {   guitar_id: $g.id,   color: "Ice Tea Burst",   type: "Gloss",   aging: "",   colors: [],   notes: "Finish & top listed as upgrades" };
--- Hardware
-CREATE guitar_hardware CONTENT {   guitar_id: $g.id,   material: "Nickel",   bridge: "ABM AVR-2",   tailpiece: "Aluminum Tailpiece",   tuners: "Nik Huber 510 Open Gear",   pickguard: "",   pickup_rings: "",   notes: "" };
--- Setup
-CREATE guitar_setup CONTENT {   guitar_id: $g.id,   strings: "",   tuning: "",   action: "",   nut_material: "",   truss_rod: "" };
--- Case / COA
-CREATE guitar_case CONTENT {   guitar_id: $g.id,   type: "Deluxe Hard Case",   coa_included: false,   notes: "" };
--- Pickups (2x)
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "Humbucker", model: "Häussel 1959 (Aged Nickel Cover)", winding: "" };
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Häussel 1959 (Aged Nickel Cover)", winding: "" };
--- Controls (5x)
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "Neck" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "Bridge" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "Neck (push/pull coil tap)" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "Bridge (push/pull coil tap)" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "" };
--- Nik Huber Krautster III — SurrealDB seed (using successful pattern)
--- Core guitar (capture id) - use unique model name to avoid duplicates
-LET $g = (CREATE guitars CONTENT {   brand: "Nik Huber",   model: "Krautster III Test",   body_style: "",   line: "",   variant: "Copper Top",   year_reference: "",   weight: "6 lbs 14 oz",   serial_number: "44749",   slug: "nik-huber-krautster-iii-test" } RETURN AFTER)[0];
--- Dimensions / specs
-CREATE guitar_dimensions CONTENT {   guitar_id: $g.id,   scale_length: "25.5\\" (635 mm)",   nut_width: "1 5/8\\"",   neck_profile: "'60 \\"C\\" Shape",   neck_thickness_1st: ".91",   neck_thickness_12th: ".93",   fingerboard_radius: "Compound 10\\"–14\\" (255–355 mm)",   fret_count: 22,   fret_type: "Medium Jumbo, extra hard (2.49 mm W × 1.19 mm H), routed slots",   binding: "" };
--- Appointments
-CREATE guitar_appointments CONTENT {   guitar_id: $g.id,   binding_body: "Cream front binding",   binding_fingerboard: "",   inlays: "Bone dot fingerboard inlays",   headstock_veneer: "Ebony",   other: "Black brushed bell knobs; Black brushed switch tip" };
--- Woods
-CREATE guitar_woods CONTENT {   guitar_id: $g.id,   top: "Copper top (finish over cap)",   body: "Spanish Cedar",   neck: "Flame Maple",   fingerboard: "East Indian Rosewood",   neck_joint: "",   top_carve: "" };
--- Finish
-CREATE guitar_finish CONTENT {   guitar_id: $g.id,   color: "Copper Top",   type: "Satin",   aging: "",   colors: [],   notes: "" };
--- Hardware
-CREATE guitar_hardware CONTENT {   guitar_id: $g.id,   material: "Nickel",   bridge: "Nick Huber Stop Tail Bridge",   tailpiece: "",   tuners: "Nick Huber 510 Open Gear (Tulip Buttons)",   pickguard: "",   pickup_rings: "",   notes: "" };
--- Setup
-CREATE guitar_setup CONTENT {   guitar_id: $g.id,   strings: "010–046",   tuning: "",   action: "",   nut_material: "Bone",   truss_rod: "Double-action (single rod, compressed)" };
--- Case / COA
-CREATE guitar_case CONTENT {   guitar_id: $g.id,   type: "Hard Case",   coa_included: false,   notes: "" };
--- Pickups (2x)
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Neck", type: "P90", model: "Custom P90 \\"1956\\"", winding: "" };
-CREATE guitar_pickups CONTENT { guitar_id: $g.id, position: "Bridge", type: "Humbucker", model: "Krautster-B (H. Häussel) w/ aged nickel cover", winding: "" };
--- Controls (3x)
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Volume", detail: "Master" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "Tone", detail: "Master (push/pull coil tap)" };
-CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", detail: "" };

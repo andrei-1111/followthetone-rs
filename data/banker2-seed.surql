@@ -8,8 +8,12 @@ LET $g = (CREATE guitars CONTENT {
   variant: "",
   year_reference: "1958",
   weight: "",
+  price_cents: 469900,
+  price_currency: "USD",
   serial_number: "",
-  slug: "banker-58-spec-v"
+  slug: "banker-58-spec-v",
+  production_year: 0,
+  spec_version_year: 1958
 } RETURN AFTER)[0];
 
 -- Dimensions / specs
@@ -31,9 +35,9 @@ CREATE guitar_appointments CONTENT {
   guitar_id: $g.id,
   binding_body: "",
   binding_fingerboard: "",
-  inlays: "",
+  inlays: "Celluloid Pearl Dot",
   headstock_veneer: "",
-  other: ""
+  other: "Vintage Correct Rubber Knee Rest + Recessed Rear Brass Ferrules"
 };
 
 -- Woods
@@ -65,7 +69,7 @@ CREATE guitar_hardware CONTENT {
   tailpiece: "Solid Brass \"V\" Tailpiece",
   tuners: "Kluson Deluxe Keystone",
   pickguard: "4 Ply White",
-  pickup_rings: "",
+  pickup_rings: "M69 Mounting Rings",
   notes: ""
 };
 

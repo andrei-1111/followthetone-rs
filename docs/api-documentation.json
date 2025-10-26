@@ -1,0 +1,499 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Guitar API",
+    "description": "API for managing guitar data with image support",
+    "license": {
+      "name": ""
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api-docs/schema.json": {
+      "get": {
+        "tags": [
+          "docs"
+        ],
+        "operationId": "get_api_schema",
+        "responses": {
+          "200": {
+            "description": "OpenAPI schema in JSON format",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/guitars": {
+      "get": {
+        "tags": [
+          "guitars"
+        ],
+        "operationId": "list_guitars",
+        "responses": {
+          "200": {
+            "description": "List of guitars with enhanced data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/guitars/slug/{slug}": {
+      "get": {
+        "tags": [
+          "guitars"
+        ],
+        "operationId": "get_guitar_by_slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Guitar slug (e.g., 'banker-58-spec-v')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Guitar found",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Guitar not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/guitars/{id}": {
+      "get": {
+        "tags": [
+          "guitars"
+        ],
+        "operationId": "get_guitar_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Guitar ID (e.g., 'guitars:123' or '123')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Guitar found",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Guitar not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/guitars/{id}/images": {
+      "put": {
+        "tags": [
+          "guitars"
+        ],
+        "operationId": "update_guitar_images",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Guitar ID (e.g., 'guitars:123' or '123')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Guitar images updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid image data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Guitar not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Health check successful",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "error",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "error": "Guitar not found",
+          "status": "error"
+        }
+      },
+      "Guitar": {
+        "type": "object",
+        "required": [
+          "brand",
+          "model"
+        ],
+        "properties": {
+          "body_style": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true
+          },
+          "external_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "external_source": {
+            "type": "string",
+            "nullable": true
+          },
+          "hero_image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "hero_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Thing"
+              }
+            ],
+            "nullable": true
+          },
+          "image_gallery": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "image_source": {
+            "type": "string",
+            "nullable": true
+          },
+          "line": {
+            "type": "string"
+          },
+          "listing_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string"
+          },
+          "price_cents": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "price_currency": {
+            "type": "string"
+          },
+          "production_year": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "shop_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "shop_slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "spec_version_year": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "variant": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "string"
+          },
+          "year_reference": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": "guitars:123",
+          "brand": "Banker",
+          "model": "58' Spec V",
+          "slug": "banker-58-spec-v",
+          "display_title": "Banker 58' Spec V",
+          "formatted_price": "$4,699.00",
+          "main_image": "https://example.com/hero.jpg",
+          "has_images": true,
+          "image_count": 3,
+          "condition_color": "green",
+          "status_color": "success",
+          "hero_image_url": "https://example.com/hero.jpg",
+          "image_gallery": [
+            "https://example.com/image1.jpg",
+            "https://example.com/image2.jpg"
+          ],
+          "image_source": "scraped",
+          "condition": "Excellent +",
+          "status": "Available",
+          "production_year": 2024,
+          "spec_version_year": 1958,
+          "price_cents": 469900,
+          "price_currency": "USD",
+          "body_style": "V",
+          "line": "",
+          "variant": "",
+          "year_reference": "1958",
+          "weight": "",
+          "serial_number": ""
+        }
+      },
+      "Image": {
+        "type": "object",
+        "required": [
+          "src",
+          "w",
+          "h"
+        ],
+        "properties": {
+          "alt": {
+            "type": "string",
+            "nullable": true
+          },
+          "guitar_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "h": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Thing"
+              }
+            ],
+            "nullable": true
+          },
+          "src": {
+            "type": "string"
+          },
+          "w": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ImageUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string",
+            "nullable": true
+          },
+          "hero_image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_gallery": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "image_source": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "example": {
+          "hero_image_url": "https://example.com/hero.jpg",
+          "image_gallery": [
+            "https://example.com/image1.jpg",
+            "https://example.com/image2.jpg"
+          ],
+          "image_source": "scraped",
+          "condition": "Excellent +",
+          "status": "Available"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "guitars",
+      "description": "Guitar management endpoints"
+    },
+    {
+      "name": "health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "docs",
+      "description": "API documentation endpoints"
+    }
+  ]
+}

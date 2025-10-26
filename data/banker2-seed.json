@@ -1,0 +1,130 @@
+{
+  "guitar": {
+    "brand": "Banker",
+    "model": "58' Spec V",
+    "body_style": "V",
+    "line": "",
+    "variant": "",
+    "year_reference": "1958",
+    "weight": "",
+    "price_cents": 469900,
+    "price_currency": "USD",
+    "serial_number": "",
+    "slug": "banker-58-spec-v",
+    "production_year": 0,
+    "spec_version_year": 1958
+  },
+  "dimensions": {
+    "scale_length": "24 3/4\" (Vintage \"Rule of 18\")",
+    "nut_width": "1 11/16\"",
+    "neck_profile": "'58 D Shape",
+    "neck_thickness_1st": ".94",
+    "neck_thickness_12th": ".97",
+    "fingerboard_radius": "12\"",
+    "fret_count": 22,
+    "fret_type": "Jescar 45085 Nickel Silver",
+    "binding": ""
+  },
+  "appointments": {
+    "binding_body": "",
+    "binding_fingerboard": "",
+    "inlays": "Celluloid Pearl Dot",
+    "headstock_veneer": "",
+    "other": "Vintage Correct Rubber Knee Rest + Recessed Rear Brass Ferrules"
+  },
+  "woods": {
+    "top": "",
+    "body": "Korina",
+    "neck": "Quartersawn Korina",
+    "fingerboard": "Rosewood",
+    "neck_joint": "",
+    "top_carve": ""
+  },
+  "finish": {
+    "color": "Natural",
+    "type": "Nitrocellulose Lacquer",
+    "aging": "Aged",
+    "colors": [],
+    "notes": ""
+  },
+  "hardware": {
+    "material": "",
+    "bridge": "Faber ABR-H",
+    "tailpiece": "Solid Brass \"V\" Tailpiece",
+    "tuners": "Kluson Deluxe Keystone",
+    "pickguard": "4 Ply White",
+    "pickup_rings": "M69 Mounting Rings",
+    "notes": ""
+  },
+  "setup": {
+    "strings": "Stringjoy 10–46 Pure Nickel",
+    "tuning": "Standard",
+    "action": "4/64",
+    "nut_material": "Unbleached Polished Bone",
+    "truss_rod": "2-Way Adjustable"
+  },
+  "case": {
+    "type": "",
+    "coa_included": true,
+    "notes": ""
+  },
+  "pickups": [
+    {
+      "position": "Neck",
+      "type": "Humbucker",
+      "model": "PAF Humbucker",
+      "winding": ""
+    },
+    {
+      "position": "Bridge",
+      "type": "Humbucker",
+      "model": "PAF Humbucker",
+      "winding": ""
+    }
+  ],
+  "controls": [
+    {
+      "name": "Volume",
+      "detail": "CTS 550k Potentiometer"
+    },
+    {
+      "name": "Volume",
+      "detail": "CTS 550k Potentiometer"
+    },
+    {
+      "name": "Tone",
+      "detail": "CTS 550k Potentiometer"
+    },
+    {
+      "name": "3-way Toggleswitch",
+      "detail": "Switchcraft"
+    }
+  ],
+  "summary": {
+    "description": "Banker 58' Spec V - Starting at $4,699",
+    "key_features": [
+      "Body: Korina",
+      "Neck: Quartersawn Korina",
+      "Neck Shape: '58 \"D\" Shape | .94 1st Fret / .97 12th Fret",
+      "Nut: 1 11/16\" Unbleached Polished Bone",
+      "Truss Rod: 2 Way Adjustable",
+      "Fretboard: Rosewood | 12\" Radius | Vintage \"Rule of 18\" 24 3/4 Scale",
+      "Inlay: Celluloid Pearl Dot",
+      "Fretwire: Jescar 45085 Nickel Silver",
+      "Bridge/Tailpiece: Faber ABR-H Bridge and Solid Brass \"V\" Tailpiece",
+      "Tuning Machines: Kluson Deluxe Keystone",
+      "Pickups: PAF Humbuckers and M69 Mounting Rings",
+      "Controls: Volume / Volume / Tone | CTS 550k Potentiometers | Switchcraft 3 Way",
+      "Finish: Natural Aged Nitrocellulose Lacquer",
+      "Pickguard: 4 Ply White",
+      "Other: Vintage Correct Rubber Knee Rest + Recessed Rear Brass Ferrules",
+      "Strings and Setup: Stringjoy 10-46 Pure Nickel | Standard Tuning | 4/64 Action"
+    ],
+    "price_display": "$4,699",
+    "production_info": {
+      "production_year": 0,
+      "spec_version_year": 1958,
+      "year_reference": "1958"
+    }
+  }
+}

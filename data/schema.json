@@ -135,7 +135,42 @@
         "hero_url": {
           "type": "string",
           "required": false,
-          "description": "Main image URL"
+          "description": "Main image URL (legacy field)"
+        },
+        "hero_image_url": {
+          "type": "string",
+          "required": false,
+          "description": "Primary hero image URL from scraped websites"
+        },
+        "image_gallery": {
+          "type": "array<string>",
+          "required": false,
+          "description": "Array of additional image URLs from scraped websites"
+        },
+        "image_source": {
+          "type": "string",
+          "required": false,
+          "description": "Source of images (scraped, direct, proxy, etc.)"
+        },
+        "condition": {
+          "type": "string",
+          "required": false,
+          "description": "Guitar condition from dealer listings (e.g., Excellent +, Mint, Good)"
+        },
+        "status": {
+          "type": "string",
+          "required": false,
+          "description": "Listing status (Sold, Available, On Hold, etc.)"
+        },
+        "production_year": {
+          "type": "number",
+          "required": false,
+          "description": "Actual build year for comparison features"
+        },
+        "spec_version_year": {
+          "type": "number",
+          "required": false,
+          "description": "Catalog/spec year for comparison features"
         },
         "inventory": {
           "type": "number",
@@ -728,7 +763,11 @@
         "slug",
         "body_style",
         "year_reference",
-        "weight"
+        "weight",
+        "hero_image_url",
+        "image_gallery",
+        "condition",
+        "status"
       ],
       "medium": [
         "line",
@@ -760,6 +799,33 @@
       "case": ["type", "coa_included", "notes"],
       "badges": ["badge"],
       "provenance": ["note", "url"]
+    },
+    "image_usage": {
+      "hero_image_url": {
+        "description": "Primary image for guitar listings and cards",
+        "usage": "Display as main image in guitar cards, detail pages, and hero sections",
+        "fallback": "Use hero_url if hero_image_url is not available"
+      },
+      "image_gallery": {
+        "description": "Array of additional images for galleries and carousels",
+        "usage": "Display in image galleries, carousels, and detail page image sections",
+        "max_display": "Show first 6-12 images in gallery, with 'View More' option"
+      },
+      "image_source": {
+        "description": "Track where images came from for debugging and attribution",
+        "usage": "Display image source in admin panels, debug info, or attribution",
+        "values": ["scraped", "direct", "proxy", "uploaded", "placeholder"]
+      },
+      "condition": {
+        "description": "Guitar condition from dealer listings",
+        "usage": "Display as badge or status indicator on guitar cards",
+        "styling": "Use color coding (green for excellent, yellow for good, red for fair)"
+      },
+      "status": {
+        "description": "Listing status for availability",
+        "usage": "Show availability status (Available, Sold, On Hold) with appropriate styling",
+        "styling": "Use badges or status indicators with color coding"
+      }
     }
   }
 }
