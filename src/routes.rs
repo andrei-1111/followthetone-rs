@@ -11,8 +11,8 @@ use crate::models::{Guitar, Image, ImageUpdateRequest, ErrorResponse};
     paths(
         health,
         list_guitars,
-        get_guitar_by_id,
         get_guitar_by_slug,
+        get_guitar_details,
         update_guitar_images,
         get_api_schema
     ),
@@ -39,8 +39,9 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     )
     .service(health)
     .service(list_guitars)
-    .service(get_guitar_by_id)
     .service(get_guitar_by_slug)
+    .service(get_guitar_details)
+    .service(debug_woods)
     .service(delete_guitar)
     .service(delete_guitar_post_redirect)
     .service(list_images)
@@ -128,12 +129,6 @@ async fn list_guitars(
                     if let serde_json::Value::Object(ref mut map) = guitar_json {
                         map.insert("slug".to_string(), serde_json::Value::String(generated_slug));
                         map.insert("display_title".to_string(), serde_json::Value::String(guitar.get_display_title()));
-                        map.insert("formatted_price".to_string(), serde_json::Value::String(guitar.get_formatted_price()));
-                        map.insert("main_image".to_string(), serde_json::Value::String(guitar.get_main_image().unwrap_or_default()));
-                        map.insert("has_images".to_string(), serde_json::Value::Bool(guitar.has_images()));
-                        map.insert("image_count".to_string(), serde_json::Value::Number(serde_json::Number::from(guitar.get_image_count())));
-                        map.insert("condition_color".to_string(), serde_json::Value::String(guitar.get_condition_color().to_string()));
-                        map.insert("status_color".to_string(), serde_json::Value::String(guitar.get_status_color().to_string()));
                     }
                     guitar_json
                 })
@@ -146,62 +141,10 @@ async fn list_guitars(
     }
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/guitars/{id}",
-    tag = "guitars",
-    params(
-        ("id" = String, Path, description = "Guitar ID (e.g., 'guitars:123' or '123')")
-    ),
-    responses(
-        (status = 200, description = "Guitar found", body = serde_json::Value),
-        (status = 404, description = "Guitar not found", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
-    )
-)]
-#[get("/api/guitars/{id}")]
-async fn get_guitar_by_id(
-    db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
-    path: web::Path<String>,
-) -> impl Responder {
-    // Accept either "guitars:abc123" or just "abc123"
-    let id_str = path.into_inner();
-    let rid = if id_str.contains(':') {
-        id_str
-    } else {
-        format!("guitars:{id_str}")
-    };
-
-    // Use db.select with the record ID
-    let res: surrealdb::Result<Vec<Guitar>> = db.select(rid.as_str()).await;
-    match res {
-        Ok(rows) if !rows.is_empty() => {
-            let guitar = &rows[0];
-            let mut guitar_json = serde_json::to_value(guitar).unwrap_or_default();
-            if let serde_json::Value::Object(ref mut map) = guitar_json {
-                map.insert("slug".to_string(), serde_json::Value::String(guitar.get_slug()));
-                map.insert("display_title".to_string(), serde_json::Value::String(guitar.get_display_title()));
-                map.insert("formatted_price".to_string(), serde_json::Value::String(guitar.get_formatted_price()));
-                map.insert("main_image".to_string(), serde_json::Value::String(guitar.get_main_image().unwrap_or_default()));
-                map.insert("has_images".to_string(), serde_json::Value::Bool(guitar.has_images()));
-                map.insert("image_count".to_string(), serde_json::Value::Number(serde_json::Number::from(guitar.get_image_count())));
-                map.insert("condition_color".to_string(), serde_json::Value::String(guitar.get_condition_color().to_string()));
-                map.insert("status_color".to_string(), serde_json::Value::String(guitar.get_status_color().to_string()));
-            }
-            HttpResponse::Ok().json(guitar_json)
-        }
-        Ok(_) => {
-            HttpResponse::NotFound().json(serde_json::json!({"error": "not found", "id": rid}))
-        }
-        Err(e) => {
-            HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
-        }
-    }
-}
 
 #[utoipa::path(
     get,
-    path = "/api/guitars/slug/{slug}",
+    path = "/api/guitars/{slug}",
     tag = "guitars",
     params(
         ("slug" = String, Path, description = "Guitar slug (e.g., 'banker-58-spec-v')")
@@ -212,7 +155,7 @@ async fn get_guitar_by_id(
         (status = 500, description = "Internal server error", body = ErrorResponse)
     )
 )]
-#[get("/api/guitars/slug/{slug}")]
+#[get("/api/guitars/{slug}")]
 async fn get_guitar_by_slug(
     db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
     path: web::Path<String>,
@@ -226,21 +169,295 @@ async fn get_guitar_by_slug(
         Ok(rows) => {
             // Find guitar by generated slug
             if let Some(guitar) = rows.into_iter().find(|g| g.get_slug() == slug) {
-                // Transform guitar to include generated slug and helper data for frontend
-                let mut guitar_json = serde_json::to_value(&guitar).unwrap_or_default();
+                // Get the record ID for fetching detailed specifications
+                let rid = guitar.id.as_ref().map(|id| id.to_string()).unwrap_or_default();
+
+                // Extract just the ID part from the record ID (remove table: prefix)
+                let id_part = if rid.contains(':') {
+                    rid.split(':').nth(1).unwrap_or(&rid)
+                } else {
+                    &rid
+                };
+
+                // Get all related specifications using query method with OMIT to exclude record fields
+                let dimensions_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_dimensions WHERE guitar_id = guitars:{};", id_part)).await;
+                let woods_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_woods WHERE guitar_id = guitars:{};", id_part)).await;
+                let finish_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_finish WHERE guitar_id = guitars:{};", id_part)).await;
+                let hardware_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_hardware WHERE guitar_id = guitars:{};", id_part)).await;
+                let electronics_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_electronics WHERE guitar_id = guitars:{};", id_part)).await;
+                let appointments_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_appointments WHERE guitar_id = guitars:{};", id_part)).await;
+                let setup_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_setup WHERE guitar_id = guitars:{};", id_part)).await;
+                let case_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_case WHERE guitar_id = guitars:{};", id_part)).await;
+                let pickups_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_pickups WHERE guitar_id = guitars:{};", id_part)).await;
+                let controls_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_controls WHERE guitar_id = guitars:{};", id_part)).await;
+
+                // Build the response with all specifications
+                let slug = guitar.get_slug();
+                let display_title = guitar.get_display_title();
+                let mut guitar_json = serde_json::to_value(guitar).unwrap_or_default();
                 if let serde_json::Value::Object(ref mut map) = guitar_json {
-                    map.insert("slug".to_string(), serde_json::Value::String(guitar.get_slug()));
-                    map.insert("display_title".to_string(), serde_json::Value::String(guitar.get_display_title()));
-                    map.insert("formatted_price".to_string(), serde_json::Value::String(guitar.get_formatted_price()));
-                    map.insert("main_image".to_string(), serde_json::Value::String(guitar.get_main_image().unwrap_or_default()));
-                    map.insert("has_images".to_string(), serde_json::Value::Bool(guitar.has_images()));
-                    map.insert("image_count".to_string(), serde_json::Value::Number(serde_json::Number::from(guitar.get_image_count())));
-                    map.insert("condition_color".to_string(), serde_json::Value::String(guitar.get_condition_color().to_string()));
-                    map.insert("status_color".to_string(), serde_json::Value::String(guitar.get_status_color().to_string()));
+                    map.insert("slug".to_string(), serde_json::Value::String(slug));
+                    map.insert("display_title".to_string(), serde_json::Value::String(display_title));
+
+                    // Add specifications from query results
+                    if let Ok(mut dims_resp) = dimensions_res {
+                        if let Ok(dims) = dims_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(dim) = dims.first() {
+                                map.insert("dimensions".to_string(), dim.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut woods_resp) = woods_res {
+                        if let Ok(woods) = woods_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(wood) = woods.first() {
+                                map.insert("woods".to_string(), wood.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut finish_resp) = finish_res {
+                        if let Ok(finish) = finish_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(fin) = finish.first() {
+                                map.insert("finish".to_string(), fin.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut hardware_resp) = hardware_res {
+                        if let Ok(hardware) = hardware_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(hw) = hardware.first() {
+                                map.insert("hardware".to_string(), hw.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut electronics_resp) = electronics_res {
+                        if let Ok(electronics) = electronics_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(elec) = electronics.first() {
+                                map.insert("electronics".to_string(), elec.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut appointments_resp) = appointments_res {
+                        if let Ok(appointments) = appointments_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(appt) = appointments.first() {
+                                map.insert("appointments".to_string(), appt.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut setup_resp) = setup_res {
+                        if let Ok(setup) = setup_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(set) = setup.first() {
+                                map.insert("setup".to_string(), set.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut case_resp) = case_res {
+                        if let Ok(case_data) = case_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(case_info) = case_data.first() {
+                                map.insert("case".to_string(), case_info.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut pickups_resp) = pickups_res {
+                        if let Ok(pickups) = pickups_resp.take::<Vec<serde_json::Value>>(0) {
+                            if !pickups.is_empty() {
+                                map.insert("pickups".to_string(), serde_json::Value::Array(pickups));
+                            }
+                        }
+                    }
+
+                    if let Ok(mut controls_resp) = controls_res {
+                        if let Ok(controls) = controls_resp.take::<Vec<serde_json::Value>>(0) {
+                            if !controls.is_empty() {
+                                map.insert("controls".to_string(), serde_json::Value::Array(controls));
+                            }
+                        }
+                    }
                 }
+
                 HttpResponse::Ok().json(guitar_json)
             } else {
                 HttpResponse::NotFound().json(serde_json::json!({"error": "not found", "slug": slug}))
+            }
+        }
+        Err(e) => {
+            HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
+        }
+    }
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/guitars/{id}/details",
+    tag = "guitars",
+    params(
+        ("id" = String, Path, description = "Guitar ID (e.g., 'guitars:123' or '123')")
+    ),
+    responses(
+        (status = 200, description = "Guitar with detailed specifications", body = serde_json::Value),
+        (status = 404, description = "Guitar not found", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse)
+    )
+)]
+#[get("/api/guitars/{id}/details")]
+async fn get_guitar_details(
+    db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
+    path: web::Path<String>,
+) -> impl Responder {
+    let id_str = path.into_inner();
+    let rid = if id_str.contains(':') {
+        id_str
+    } else {
+        format!("guitars:{id_str}")
+    };
+
+    // Get the main guitar record by selecting all and filtering (same as get_guitar_by_slug)
+    let guitar_res: surrealdb::Result<Vec<Guitar>> = db.select("guitars").await;
+    match guitar_res {
+        Ok(rows) => {
+            // Find guitar by record ID
+            if let Some(guitar) = rows.into_iter().find(|g| g.id.as_ref().map(|id| id.to_string()) == Some(rid.clone())) {
+                // Extract just the ID part from the record ID (remove table: prefix)
+                let id_part = if rid.contains(':') {
+                    rid.split(':').nth(1).unwrap_or(&rid)
+                } else {
+                    &rid
+                };
+
+                // Get all related specifications using query method with OMIT to exclude record fields
+                let dimensions_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_dimensions WHERE guitar_id = guitars:{};", id_part)).await;
+                let woods_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_woods WHERE guitar_id = guitars:{};", id_part)).await;
+                let finish_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_finish WHERE guitar_id = guitars:{};", id_part)).await;
+                let hardware_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_hardware WHERE guitar_id = guitars:{};", id_part)).await;
+                let electronics_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_electronics WHERE guitar_id = guitars:{};", id_part)).await;
+                let appointments_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_appointments WHERE guitar_id = guitars:{};", id_part)).await;
+                let setup_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_setup WHERE guitar_id = guitars:{};", id_part)).await;
+                let case_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_case WHERE guitar_id = guitars:{};", id_part)).await;
+                let pickups_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_pickups WHERE guitar_id = guitars:{};", id_part)).await;
+                let controls_res: surrealdb::Result<surrealdb::Response> = db.query(format!("SELECT * OMIT id, guitar_id FROM guitar_controls WHERE guitar_id = guitars:{};", id_part)).await;
+
+                // Build the response with all specifications
+                let slug = guitar.get_slug();
+                let display_title = guitar.get_display_title();
+                let mut guitar_json = serde_json::to_value(guitar).unwrap_or_default();
+                if let serde_json::Value::Object(ref mut map) = guitar_json {
+                    map.insert("slug".to_string(), serde_json::Value::String(slug));
+                    map.insert("display_title".to_string(), serde_json::Value::String(display_title));
+
+                    // Add specifications from query results
+                    if let Ok(mut dims_resp) = dimensions_res {
+                        if let Ok(dims) = dims_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(dim) = dims.first() {
+                                map.insert("dimensions".to_string(), dim.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut woods_resp) = woods_res {
+                        if let Ok(woods) = woods_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(wood) = woods.first() {
+                                map.insert("woods".to_string(), wood.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut finish_resp) = finish_res {
+                        if let Ok(finish) = finish_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(fin) = finish.first() {
+                                map.insert("finish".to_string(), fin.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut hardware_resp) = hardware_res {
+                        if let Ok(hardware) = hardware_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(hw) = hardware.first() {
+                                map.insert("hardware".to_string(), hw.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut electronics_resp) = electronics_res {
+                        if let Ok(electronics) = electronics_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(elec) = electronics.first() {
+                                map.insert("electronics".to_string(), elec.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut appointments_resp) = appointments_res {
+                        if let Ok(appointments) = appointments_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(appt) = appointments.first() {
+                                map.insert("appointments".to_string(), appt.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut setup_resp) = setup_res {
+                        if let Ok(setup) = setup_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(set) = setup.first() {
+                                map.insert("setup".to_string(), set.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut case_resp) = case_res {
+                        if let Ok(case_data) = case_resp.take::<Vec<serde_json::Value>>(0) {
+                            if let Some(case_info) = case_data.first() {
+                                map.insert("case".to_string(), case_info.clone());
+                            }
+                        }
+                    }
+
+                    if let Ok(mut pickups_resp) = pickups_res {
+                        if let Ok(pickups) = pickups_resp.take::<Vec<serde_json::Value>>(0) {
+                            if !pickups.is_empty() {
+                                map.insert("pickups".to_string(), serde_json::Value::Array(pickups));
+                            }
+                        }
+                    }
+
+                    if let Ok(mut controls_resp) = controls_res {
+                        if let Ok(controls) = controls_resp.take::<Vec<serde_json::Value>>(0) {
+                            if !controls.is_empty() {
+                                map.insert("controls".to_string(), serde_json::Value::Array(controls));
+                            }
+                        }
+                    }
+                }
+
+                HttpResponse::Ok().json(guitar_json)
+            } else {
+                HttpResponse::NotFound().json(serde_json::json!({"error": "not found", "id": rid}))
+            }
+        }
+        Err(e) => {
+            HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
+        }
+    }
+}
+
+#[get("/api/debug/woods")]
+async fn debug_woods(
+    db: web::Data<Surreal<surrealdb::engine::remote::http::Client>>,
+) -> impl Responder {
+    // Test by getting all woods records excluding both id and guitar_id fields
+    let result: surrealdb::Result<surrealdb::Response> = db.query("SELECT * OMIT id, guitar_id FROM guitar_woods LIMIT 5;").await;
+    match result {
+        Ok(mut response) => {
+            if let Ok(woods) = response.take::<Vec<serde_json::Value>>(0) {
+                HttpResponse::Ok().json(serde_json::json!({
+                    "count": woods.len(),
+                    "data": woods
+                }))
+            } else {
+                HttpResponse::InternalServerError().json(serde_json::json!({"error": "Failed to parse woods data"}))
             }
         }
         Err(e) => {

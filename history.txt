@@ -1,5 +1,4 @@
 #V2
--- Update guitar that has "Carter Vintage" in its model name
 UPDATE guitars SET model = "50th Anniversary Korina Flying V" WHERE model = "50th Anniversary Korina Flying V Carter Vintage";
 -- Remove "Carter Vintage" from guitar slug in the database
 -- Update guitar that has "Carter Vintage" in its slug
@@ -99,3 +98,4 @@ CREATE guitar_controls CONTENT { guitar_id: $g.id, name: "3-way Toggleswitch", d
 SELECT id, brand, model FROM guitars WHERE id = $g.id;
 SELECT count() AS pickup_count FROM guitar_pickups WHERE guitar_id = $g.id;
 SELECT count() AS control_count FROM guitar_controls WHERE guitar_id = $g.id;
+SELECT * FROM guitar_woods;
